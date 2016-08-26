@@ -8,7 +8,7 @@ import com.blade.jdbc.annotation.Table;
 /**
  * Settings对象
  */
-@Table(name = "t_settings", cached = false)
+@Table(name = "t_settings", cached = true)
 public class Settings extends Model {
 
 	private static final long serialVersionUID = 1L;
