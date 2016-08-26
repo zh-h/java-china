@@ -1,5 +1,7 @@
 package com.javachina.service.impl;
 
+import java.util.List;
+
 import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.Pager;
@@ -41,14 +43,21 @@ public class TopicServiceImpl implements TopicService {
 
 	@Override
 	public Pager<TopicDto> getTopics(int page, int limit) {
-		
 		String sql = "select a.tid, a.title, a.create_time, a.update_time, b.title as node_name, b.slug as node_slug, c.avatar "
 				+ "from t_topic a "
 				+ "left join t_node b on a.nid = b.nid "
 				+ "left join t_user c on a.user_name = c.login_name "
 				+ "where a.status = ?";
-		
 		return Topic.db.sql(sql, 1).orderBy("a.weight desc").page(page, limit, TopicDto.class);
+	}
+
+	@Override
+	public List<TopicDto> getTodayTopics(int limit) {
+		String sql = "select a.tid, a.user_name, a.title, b.avatar "
+				+ "from t_topic a "
+				+ "left join t_user b on a.user_name = b.login_name "
+				+ "where a.status = 1 order by a.weight desc limit ?";
+		return Topic.db.sql(sql, limit).list(TopicDto.class);
 	}
 	
 

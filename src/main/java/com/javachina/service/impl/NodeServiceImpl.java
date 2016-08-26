@@ -1,5 +1,7 @@
 package com.javachina.service.impl;
 
+import java.util.List;
+
 import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.Pager;
 import com.javachina.model.Node;
@@ -21,6 +23,11 @@ public class NodeServiceImpl implements NodeService {
 	@Override
 	public Pager<Node> getNodes(String orderBy, int page, int limit) {
 		return Node.db.orderBy(orderBy).page(page, limit, Node.class);
+	}
+
+	@Override
+	public List<Node> getHotNodes(int limit) {
+		return Node.db.eq("is_del", 0).orderBy("topics desc").page(1, limit, Node.class).getList();
 	}
 
 }
