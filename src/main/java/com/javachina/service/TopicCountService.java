@@ -4,10 +4,10 @@ import com.javachina.model.TopicCount;
 
 public interface TopicCountService {
 	
-	TopicCount getCount(Long tid);
+	TopicCount getCount(Integer tid);
 	
-	boolean update(String type, Long tid, int count);
+	boolean update(String type, Integer tid, int count);
 	
-	boolean save(Long tid, Integer create_time);
+	boolean save(Integer tid, Integer create_time);
 	
 }

@@ -3,41 +3,33 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.junicorn</groupId>
 	<artifactId>java-china</artifactId>
-	<packaging>war</packaging>
-	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<version>1.0</version>
 	<name>java-china</name>
-	<url>http://java-china.org</url>
+	<url>https://java-china.org</url>
+	
+	<properties>
+		<druid.version>1.0.24</druid.version>
+	</properties>
 	
 	<dependencies>
 		<!-- mvc -->
 		<dependency>
 			<groupId>com.bladejava</groupId>
 			<artifactId>blade-core</artifactId>
-			<version>1.6.2</version>
-		</dependency>
-		<!-- 七牛CDN -->
-		<dependency>
-			<groupId>com.qiniu</groupId>
-			<artifactId>qiniu-java-sdk</artifactId>
-			<version>7.0.8</version>
+			<version>1.6.4</version>
 		</dependency>
 		<!-- 数据库操作 -->
 		<dependency>
 			<groupId>com.bladejava</groupId>
 			<artifactId>blade-jdbc</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.3</version>
 		</dependency>
 		<!-- 模板引擎 -->
 		<dependency>
 			<groupId>com.bladejava</groupId>
 			<artifactId>blade-template-jetbrick</artifactId>
 			<version>0.0.4</version>
-		</dependency>
-		<!-- log4j日志实现 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.2</version>
 		</dependency>
 		<!-- 验证码 -->
 		<dependency>
@@ -52,12 +44,28 @@
 			<version>5.1.38</version>
 		</dependency>
 		<dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>druid</artifactId>
+		    <version>${druid.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bladejava</groupId>
+			<artifactId>blade-embed-jetty</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.16</version>
+		</dependency>
+		
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>oss-snapshots</id>
@@ -70,10 +78,41 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<build>
 		<finalName>java-china</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.javachina.Application</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -84,20 +123,7 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.2.12.v20150709</version>
-				<configuration>
-					<scanIntervalSeconds>3</scanIntervalSeconds>
-					<webApp>
-						<contextPath>/</contextPath>
-					</webApp>
-					<httpConnector>
-						<port>9000</port>
-					</httpConnector>
-				</configuration>
-			</plugin>
+
 		</plugins>
 	</build>
 </project>

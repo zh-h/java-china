@@ -2,7 +2,7 @@ package com.javachina.model;
 
 public class LoginUser {
 
-	private Long uid;
+	private Integer uid;
 	private String user_name;
 	private String nick_name;
 	private String pass_word;
@@ -32,11 +32,11 @@ public class LoginUser {
 		this.pass_word = pass_word;
 	}
 
-	public Long getUid() {
+	public Integer getUid() {
 		return uid;
 	}
 
-	public void setUid(Long uid) {
+	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
 

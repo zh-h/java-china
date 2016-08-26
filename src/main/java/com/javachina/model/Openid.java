@@ -1,67 +1,30 @@
 package com.javachina.model;
 
-import java.io.Serializable;
-
+import com.blade.jdbc.Model;
+import com.blade.jdbc.annotation.Column;
+import com.blade.jdbc.annotation.GeneratedValue;
+import com.blade.jdbc.annotation.Id;
 import com.blade.jdbc.annotation.Table;
 
 /**
  * Activecode对象
  */
-@Table(value = "t_openid", PK = "id")
-public class Openid implements Serializable {
+@Table(name = "t_openid", cached = false)
+public class Openid extends Model {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	@Id
+	@Column(unique=true)
+	@GeneratedValue 
+	public Integer id;
 	
-	private String type;
+	public String type;
 	
-	private Long open_id;
+	public Integer open_id;
 	
-	private Long uid;
+	public Integer uid;
 	
-	private Long create_time;
-	
-	public Openid(){}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getOpen_id() {
-		return open_id;
-	}
-
-	public void setOpen_id(Long open_id) {
-		this.open_id = open_id;
-	}
-	
-	public Long getUid() {
-		return uid;
-	}
-
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-
-	public Long getCreate_time() {
-		return create_time;
-	}
-
-	public void setCreate_time(Long create_time) {
-		this.create_time = create_time;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
+	public Integer create_time;
 	
 }

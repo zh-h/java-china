@@ -1,11 +1,10 @@
 package com.javachina.ext;
 
+import com.blade.kit.StringKit;
 import com.javachina.Constant;
 import com.javachina.ImageTypes;
 import com.javachina.kit.DateKit;
 import com.javachina.kit.Utils;
-
-import blade.kit.StringKit;
 
 public class Funcs {
 

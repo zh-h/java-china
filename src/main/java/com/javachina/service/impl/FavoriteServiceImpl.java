@@ -6,9 +6,9 @@ import java.util.Map;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
-import com.blade.jdbc.AR;
-import com.blade.jdbc.Page;
-import com.blade.jdbc.QueryParam;
+import com.blade.jdbc.Pager;
+import com.blade.kit.DateKit;
+import com.blade.kit.StringKit;
 import com.javachina.Types;
 import com.javachina.model.Favorite;
 import com.javachina.model.Topic;
@@ -17,9 +17,6 @@ import com.javachina.service.NodeService;
 import com.javachina.service.TopicCountService;
 import com.javachina.service.TopicService;
 import com.javachina.service.UserService;
-
-import blade.kit.DateKit;
-import blade.kit.StringKit;
 
 @Service
 public class FavoriteServiceImpl implements FavoriteService {
@@ -36,50 +33,43 @@ public class FavoriteServiceImpl implements FavoriteService {
 	@Inject
 	private TopicCountService topicCountService;
 	
-	public Favorite getFavorite(String type,Long uid, Long event_id) {
-		return AR.find(QueryParam.me().eq("type", type).eq("uid", uid).eq("event_id", event_id)).first(Favorite.class);
-	}
-		
-	public List<Favorite> getFavoriteList(QueryParam queryParam) {
-		if(null != queryParam){
-			return AR.find(queryParam).list(Favorite.class);
-		}
-		return null;
-	}
-	
-	public Page<Favorite> getPageList(QueryParam queryParam) {
-		if(null != queryParam){
-			return AR.find(queryParam).page(Favorite.class);
-		}
-		return null;
+	public Favorite getFavorite(String type,Integer uid, Integer event_id) {
+		return Favorite.db.eq("type", type).eq("uid", uid).eq("event_id", event_id).first(Favorite.class);
 	}
 	
 	@Override
-	public Integer update(String type, Long uid, Long event_id) {
+	public Integer update(String type, Integer uid, Integer event_id) {
 		
 		try {
-			
 			int count = 0;
 			boolean isFavorite = this.isFavorite(type, uid, event_id);
 			if(!isFavorite){
-				AR.update("insert into t_favorite(type, uid, event_id, create_time) values(?, ?, ?, ?)", 
-						type, uid, event_id, DateKit.getCurrentUnixTime()).executeUpdate();
+				Favorite favorite = new Favorite();
+				favorite.type = type;
+				favorite.uid = uid;
+				favorite.event_id = event_id;
+				favorite.create_time = DateKit.getCurrentUnixTime();
+				Favorite.db.insert(favorite);
 				count = 1;
 			} else {
-				AR.update("delete from t_favorite where type = ? and uid = ? and event_id = ?", type, uid, event_id).executeUpdate();
+				Favorite favorite = new Favorite();
+				favorite.type = type;
+				favorite.uid = uid;
+				favorite.event_id = event_id;
+				Favorite.db.delete(favorite);
 				count = -1;
 			}
 			
 			// 收藏帖子
 			if(type.equals(Types.topic.toString())){
 				topicCountService.update(Types.favorites.toString(), event_id, count);
-				topicService.updateWeight(event_id);
+				//topicService.updateWeight(event_id);
 			}
 			
 			// 帖子点赞
 			if(type.equals(Types.love.toString())){
 				topicCountService.update(Types.loves.toString(), event_id, count);
-				topicService.updateWeight(event_id);
+				//topicService.updateWeight(event_id);
 			}
 			
 			return count;
@@ -90,7 +80,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	@Override
-	public boolean isFavorite(String type, Long uid, Long event_id) {
+	public boolean isFavorite(String type, Integer uid, Integer event_id) {
 		if (StringKit.isBlank(type) || null == uid || null == event_id) {
 			return false;
 		}
@@ -98,15 +88,15 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	@Override
-	public Long favorites(String type, Long uid) {
+	public Long favorites(String type, Integer uid) {
 		if(null != uid && StringKit.isNotBlank(type)){
-			return AR.find("select count(1) from t_favorite where type = ? and uid = ?", type, uid).first(Long.class);
+			return Favorite.db.eq("type", type).eq("uid", uid).count(Long.class);
 		}
 		return 0L;
 	}
 
 	@Override
-	public Page<Map<String, Object>> getMyTopics(Long uid, Integer page, Integer count) {
+	public Pager<Map<String, Object>> getMyTopics(Integer uid, Integer page, Integer count) {
 		if(null != uid){
 			if(null == page || page < 1){
 				page = 1;
@@ -116,29 +106,28 @@ public class FavoriteServiceImpl implements FavoriteService {
 				count = 10;
 			}
 			
-			QueryParam queryParam = QueryParam.me();
-			queryParam.eq("type", Types.topic.toString()).eq("uid", uid).orderby("id desc").page(page, count);
-			Page<Favorite> faPage = this.getPageList(queryParam);
-			if(null != faPage && faPage.getTotalCount() > 0){
-				long totalCount = faPage.getTotalCount();
-				int page_ = faPage.getPage();
-				int pageSize = faPage.getPageSize();
-				Page<Map<String, Object>> result = new Page<Map<String,Object>>(totalCount, page_, pageSize);
+			Pager<Favorite> faPage = Favorite.db.eq("type", Types.topic.toString()).eq("uid", uid).orderBy("id desc").page(page, count, Favorite.class);
+			if(null != faPage && faPage.getTotal() > 0){
+				long totalCount = faPage.getTotal();
+				int page_ = faPage.getPageNum();
+				int pageSize = faPage.getLimit();
 				
-				List<Favorite> favorites = faPage.getResults();
+				Pager<Map<String, Object>> result = new Pager<Map<String,Object>>(totalCount, page_, pageSize);
+				
+				List<Favorite> favorites = faPage.getList();
 				
 				List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 				if(null != favorites && favorites.size() > 0){
 					for(Favorite favorite : favorites){
-						Long tid = favorite.getEvent_id();
+						Integer tid = favorite.event_id;
 						Topic topic = topicService.getTopic(tid);
-						Map<String, Object> topicMap = topicService.getTopicMap(topic, false);
+						/*Map<String, Object> topicMap = topicService.getTopicMap(topic, false);
 						if(null != topicMap && !topicMap.isEmpty()){
 							list.add(topicMap);
-						}
+						}*/
 					}
 				}
-				result.setResults(list);
+				result.setList(list);
 				
 				return result;
 			}
@@ -147,7 +136,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	@Override
-	public Page<Map<String, Object>> getFollowing(Long uid, Integer page, Integer count) {
+	public Pager<Map<String, Object>> getFollowing(Integer uid, Integer page, Integer count) {
 		if(null != uid){
 			if(null == page || page < 1){
 				page = 1;
@@ -156,28 +145,26 @@ public class FavoriteServiceImpl implements FavoriteService {
 				count = 10;
 			}
 			
-			QueryParam queryParam = QueryParam.me();
-			queryParam.eq("type", Types.following.toString()).eq("uid", uid).orderby("id desc").page(page, count);
-			Page<Favorite> faPage = this.getPageList(queryParam);
-			if(null != faPage && faPage.getTotalCount() > 0){
-				long totalCount = faPage.getTotalCount();
-				int page_ = faPage.getPage();
-				int pageSize = faPage.getPageSize();
-				Page<Map<String, Object>> result = new Page<Map<String,Object>>(totalCount, page_, pageSize);
+			Pager<Favorite> faPage = Favorite.db.eq("type", Types.following.toString()).eq("uid", uid).orderBy("id desc").page(page, count, Favorite.class);
+			if(null != faPage && faPage.getTotal() > 0){
+				long totalCount = faPage.getTotal();
+				int page_ = faPage.getPageNum();
+				int pageSize = faPage.getLimit();
+				Pager<Map<String, Object>> result = new Pager<Map<String,Object>>(totalCount, page_, pageSize);
 				
-				List<Favorite> favorites = faPage.getResults();
+				List<Favorite> favorites = faPage.getList();
 				
 				List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 				if(null != favorites && favorites.size() > 0){
 					for(Favorite favorite : favorites){
-						Long user_id = favorite.getEvent_id();
+						Integer user_id = favorite.event_id;
 						Map<String, Object> userMap = userService.getUserDetail(user_id);
 						if(null != userMap && !userMap.isEmpty()){
 							list.add(userMap);
 						}
 					}
 				}
-				result.setResults(list);
+				result.setList(list);
 				return result;
 			}
 		}
@@ -185,18 +172,16 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getMyNodes(Long uid) {
+	public List<Map<String, Object>> getMyNodes(Integer uid) {
 		if(null != uid){
-			QueryParam queryParam = QueryParam.me();
-			queryParam.eq("type", Types.node.toString()).eq("uid", uid).orderby("id desc");
-			List<Favorite> favorites = AR.find(queryParam).list(Favorite.class);
+			List<Favorite> favorites = Favorite.db.eq("type", Types.node.toString()).eq("uid", uid).orderBy("id desc").list(Favorite.class);
 			if(null != favorites && favorites.size() > 0){
 				List<Map<String, Object>> result = new ArrayList<Map<String,Object>>(favorites.size());
-				for(Favorite favorite : favorites){
-					Long nid = favorite.getEvent_id();
-					Map<String, Object> node = nodeService.getNodeDetail(null, nid);
-					result.add(node);
-				}
+//				for(Favorite favorite : favorites){
+//					Integer nid = favorite.event_id;
+//					Map<String, Object> node = nodeService.getNodeDetail(null, nid);
+//					result.add(node);
+//				}
 				return result;
 			}
 		}

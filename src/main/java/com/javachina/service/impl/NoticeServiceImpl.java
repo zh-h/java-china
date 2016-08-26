@@ -7,11 +7,10 @@ import java.util.Map;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
-import com.blade.jdbc.AR;
-import com.blade.jdbc.Page;
-import com.blade.jdbc.QueryParam;
+import com.blade.jdbc.Pager;
+import com.blade.kit.DateKit;
+import com.blade.kit.StringKit;
 import com.javachina.Types;
-import com.javachina.kit.DateKit;
 import com.javachina.kit.Utils;
 import com.javachina.model.Comment;
 import com.javachina.model.Notice;
@@ -21,8 +20,6 @@ import com.javachina.service.CommentService;
 import com.javachina.service.NoticeService;
 import com.javachina.service.TopicService;
 import com.javachina.service.UserService;
-
-import blade.kit.StringKit;
 
 @Service
 public class NoticeServiceImpl implements NoticeService {
@@ -37,39 +34,37 @@ public class NoticeServiceImpl implements NoticeService {
 	private CommentService commentService;
 	
 	@Override
-	public boolean save(String type, Long to_uid, Long event_id) {
+	public boolean save(String type, Integer to_uid, Integer event_id) {
 		if(StringKit.isNotBlank(type) && null != to_uid && null != event_id){
-			AR.update("insert into t_notice(type, to_uid, event_id, create_time) values(?, ?, ?, ?)", type,
-					to_uid, event_id, DateKit.getCurrentUnixTime()).executeUpdate();
+			Notice notice = new Notice();
+			notice.type = type;
+			notice.to_uid = to_uid;
+			notice.event_id = event_id;
+			notice.create_time = DateKit.getCurrentUnixTime();
+			Notice.db.insert(notice);
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public Page<Map<String, Object>> getNoticePage(Long uid, Integer page, Integer count) {
+	public Pager<Map<String, Object>> getNoticePage(Integer uid, Integer page, Integer count) {
 		if(null != uid){
-			if(null == page || page < 1){
-				page = 1;
-			}
-			if(null == count || count < 1){
-				count = 10;
-			}
-			QueryParam queryParam = QueryParam.me();
-			queryParam.eq("to_uid", uid).orderby("id desc").page(page, count);
-			Page<Notice> noticePage = AR.find(queryParam).page(Notice.class);
-			return this.getNoticePageMap(noticePage);
+			if(page < 1) page = 1;
+			if(count < 1) count = 10;
+			Pager<Notice> pager = Notice.db.eq("to_uid", uid).orderBy("id desc").page(page, count, Notice.class);
+			return this.getNoticePageMap(pager);
 		}
 		return null;
 	}
 	
-	private Page<Map<String, Object>> getNoticePageMap(Page<Notice> noticePage){
-		long totalCount = noticePage.getTotalCount();
-		int page = noticePage.getPage();
-		int pageSize = noticePage.getPageSize();
-		Page<Map<String, Object>> pageResult = new Page<Map<String,Object>>(totalCount, page, pageSize);
+	private Pager<Map<String, Object>> getNoticePageMap(Pager<Notice> noticePage){
+		long totalCount = noticePage.getTotal();
+		int page = noticePage.getPageNum();
+		int pageSize = noticePage.getLimit();
+		Pager<Map<String, Object>> pageResult = new Pager<Map<String,Object>>(totalCount, page, pageSize);
 		
-		List<Notice> notices = noticePage.getResults();
+		List<Notice> notices = noticePage.getList();
 		
 		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
 		if(null != notices){
@@ -80,7 +75,7 @@ public class NoticeServiceImpl implements NoticeService {
 				}
 			}
 		}
-		pageResult.setResults(result);
+		pageResult.setList(result);
 		
 		return pageResult;
 	}
@@ -90,39 +85,39 @@ public class NoticeServiceImpl implements NoticeService {
 			return null;
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
-		Long uid = notice.getTo_uid();
+		Integer uid = notice.to_uid;
 		User user = userService.getUser(uid);
 		if(null == user){
 			return null;
 		}
-		map.put("id", notice.getId());
-		map.put("type", notice.getType());
-		map.put("create_time", notice.getCreate_time());
-		map.put("user_name", user.getLogin_name());
+		map.put("id", notice.id);
+		map.put("type", notice.type);
+		map.put("create_time", notice.create_time);
+		map.put("user_name", user.login_name);
 		
-		if(notice.getType().equals(Types.comment_at.toString()) || notice.getType().equals(Types.comment.toString())){
-			Comment comment = commentService.getComment(notice.getEvent_id());
+		if(notice.type.equals(Types.comment_at.toString()) || notice.type.equals(Types.comment.toString())){
+			Comment comment = commentService.getComment(notice.event_id);
 			if(null != comment){
-				Topic topic = topicService.getTopic(comment.getTid());
+				Topic topic = topicService.getTopic(comment.tid);
 				if(null != topic){
-					String title = topic.getTitle();
-					String content = Utils.markdown2html(comment.getContent());
+					String title = topic.title;
+					String content = Utils.markdown2html(comment.content);
 					map.put("title", title);
 					map.put("content", content);
-					map.put("tid", topic.getTid());
+					map.put("tid", topic.tid);
 				}
 			}
 		}
 		
-		if(notice.getType().equals(Types.topic_at.toString())){
-			Topic topic = topicService.getTopic(notice.getEvent_id());
+		if(notice.type.equals(Types.topic_at.toString())){
+			Topic topic = topicService.getTopic(notice.event_id);
 			if(null != topic){
-				String title = topic.getTitle();
-				String content = Utils.markdown2html(topic.getContent());
+				String title = topic.title;
+				String content = Utils.markdown2html(topic.content);
 				
 				map.put("title", title);
 				map.put("content", content);
-				map.put("tid", topic.getTid());
+				map.put("tid", topic.tid);
 			}
 		}
 		
@@ -130,11 +125,14 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public boolean read(Long to_uid) {
+	public boolean read(Integer to_uid) {
 		if(null != to_uid){
 			// 删除
 			try {
-				AR.update("update t_notice set is_read = 1 where to_uid = ?", to_uid).executeUpdate(true);
+				Notice notice = new Notice();
+				notice.is_read = true;
+				notice.to_uid = to_uid;
+				Notice.db.update(notice);
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -144,9 +142,9 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public Long getNotices(Long uid) {
+	public Long getNotices(Integer uid) {
 		if(null != uid){
-			return AR.find("select count(1) from t_notice where to_uid = ? and is_read = 0", uid).first(Long.class);
+			return Notice.db.eq("is_read", 0).eq("to_uid", uid).count(Long.class);
 		}
 		return 0L;
 	}

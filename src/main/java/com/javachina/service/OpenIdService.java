@@ -4,10 +4,10 @@ import com.javachina.model.Openid;
 
 public interface OpenIdService {
 	
-	Openid getOpenid(String type, Long open_id);
+	Openid getOpenid(String type, Integer open_id);
 	
-	boolean save(String type, Long open_id, Long uid);
+	boolean save(String type, Integer open_id, Integer uid);
 	
-	boolean delete(String type, Long uid);
+	boolean delete(String type, Integer uid);
 		
 }

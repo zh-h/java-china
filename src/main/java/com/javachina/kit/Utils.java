@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.blade.kit.StringKit;
 import com.blade.web.http.Request;
 import com.javachina.ImageTypes;
 import com.javachina.ext.Funcs;
@@ -20,7 +21,6 @@ import com.javachina.ext.markdown.BlockEmitter;
 import com.javachina.ext.markdown.Configuration;
 import com.javachina.ext.markdown.Processor;
 
-import blade.kit.StringKit;
 
 /**
  * 工具类
@@ -68,7 +68,8 @@ public class Utils {
 	}
 	
 	public static String getAvatar(String avatar, ImageTypes imageTypes){
-		return QiniuKit.getUrl(avatar + '-' + imageTypes.toString());
+		//return QiniuKit.getUrl(avatar + '-' + imageTypes.toString());
+		return "";
 	}
 	
 	public static boolean isEmail(String str){
@@ -149,7 +150,7 @@ public class Utils {
 	}
 	
 	public static void run(Runnable t){
-		Executors.newSingleThreadExecutor().submit(t);
+		Executors.newSingleThreadExecutor().execute(t);
 	}
 
 	final static Configuration config = Configuration.builder()

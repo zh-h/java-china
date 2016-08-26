@@ -1,57 +1,28 @@
 package com.javachina.model;
 
-import java.io.Serializable;
-
+import com.blade.jdbc.Model;
+import com.blade.jdbc.annotation.Column;
+import com.blade.jdbc.annotation.GeneratedValue;
+import com.blade.jdbc.annotation.Id;
 import com.blade.jdbc.annotation.Table;
 
 /**
  * Link对象
  */
-@Table(value = "t_link", PK = "id")
-public class Link implements Serializable {
+@Table(name = "t_link", cached = false)
+public class Link extends Model {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	@Id
+	@Column(unique=true)
+	@GeneratedValue 
+	public Integer id;
 	
-	private String title;
+	public String title;
 	
-	private String url;
+	public String url;
 	
-	private Long create_time;
-	
-	public Link(){}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	
-	public Long getCreate_time() {
-		return create_time;
-	}
-
-	public void setCreate_time(Long create_time) {
-		this.create_time = create_time;
-	}
+	public Integer create_time;
 	
 }

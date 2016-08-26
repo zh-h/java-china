@@ -2,16 +2,14 @@ package com.javachina.service.impl;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
-import com.blade.jdbc.AR;
+import com.blade.kit.DateKit;
+import com.blade.kit.StringKit;
 import com.javachina.model.Activecode;
 import com.javachina.model.User;
 import com.javachina.service.ActivecodeService;
 import com.javachina.service.SendMailService;
 import com.javachina.service.UserService;
 import com.javachina.service.UserinfoService;
-
-import blade.kit.DateKit;
-import blade.kit.StringKit;
 
 @Service
 public class ActivecodeServiceImpl implements ActivecodeService {
@@ -30,15 +28,11 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 		if(StringKit.isBlank(code)){
 			return null;
 		}
-		
-		return AR.find("select * from t_activecode where code = ?", code).first(Activecode.class);
+		return Activecode.db.eq("code",	code).first(Activecode.class);
 	}
 	
 	public Activecode getActivecodeById(Integer id) {
-		if(null == id){
-			return null;
-		}
-		return AR.findById(Activecode.class, id);
+		return Activecode.db.findByPK(id, Activecode.class);
 	}
 		
 	@Override
@@ -53,17 +47,23 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 		String code = StringKit.getRandomChar(32);
 		try {
 			
-			AR.update("insert into t_activecode(uid, code, type, expires_time, create_time) values(?, ?, ?, ?, ?)",
-					user.getUid(), code, type, expires_time, time).executeUpdate();
+			Activecode temp = new Activecode();
+			temp.uid = user.uid;
+			temp.code = code;
+			temp.type = type;
+			temp.expires_time = expires_time;
+			temp.create_time = time;
 			
-			userinfoService.save(user.getUid());
+			Activecode.db.insert(temp);
+			
+			userinfoService.save(user.uid);
 			
 			if(type.equals("signup")){
-				sendMailService.signup(user.getLogin_name(), user.getEmail(), code);
+				sendMailService.signup(user.login_name, user.email, code);
 			}
 			
 			if(type.equals("forgot")){
-				sendMailService.forgot(user.getLogin_name(), user.getEmail(), code);
+				sendMailService.forgot(user.login_name, user.email, code);
 			}
 			
 			return code;
@@ -79,7 +79,7 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 			return false;
 		}
 		try {
-			AR.update("update t_activecode set is_use = ? where code = ?", 1, code).executeUpdate(true);
+			Activecode.db.sql("update t_activecode set is_use = ? where code = ?", 1, code).execute();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,7 +88,7 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 	}
 
 	@Override
-	public boolean resend(Long uid) {
+	public boolean resend(Integer uid) {
 		if(null != uid){
 			User user = userService.getUser(uid);
 			if(null == user){
@@ -100,9 +100,16 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 			String code = StringKit.getRandomChar(32);
 			try {
 				
-				AR.update("insert into t_activecode(uid, code, type, expires_time, create_time) values(?, ?, ?, ?, ?)",
-						user.getUid(), code, "signup", expires_time, time).executeUpdate();
-				sendMailService.signup(user.getLogin_name(), user.getEmail(), code);
+				Activecode temp = new Activecode();
+				temp.uid = user.uid;
+				temp.code = code;
+				temp.type = "signup";
+				temp.expires_time = expires_time;
+				temp.create_time = time;
+				
+				Activecode.db.insert(temp);
+				
+				sendMailService.signup(user.login_name, user.email, code);
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();

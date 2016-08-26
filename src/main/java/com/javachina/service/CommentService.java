@@ -1,27 +1,22 @@
 package com.javachina.service;
 
-import java.util.List;
 import java.util.Map;
 
-import com.blade.jdbc.Page;
-import com.blade.jdbc.QueryParam;
-
+import com.blade.jdbc.Pager;
 import com.javachina.model.Comment;
 
 public interface CommentService {
 	
-	Comment getComment(Long cid);
+	Comment getComment(Integer cid);
 		
-	Comment getTopicLastComment(Long tid);
+	Comment getTopicLastComment(Integer tid);
 	
-	List<Comment> getCommentList(QueryParam queryParam);
+	Pager<Map<String, Object>> getPageListMap(Integer tid, Integer uid, String orderby, int page, int count);
 	
-	Page<Map<String, Object>> getPageListMap(QueryParam queryParam);
+	Integer save( Integer uid, Integer toUid, Integer tid, String content, String ua);
 	
-	Long save( Long uid, Long toUid, Long tid, String content, String ua);
+	boolean delete(Integer cid);
 	
-	boolean delete(Long cid);
-	
-	Long getComments(Long uid);
+	Long getComments(Integer uid);
 		
 }

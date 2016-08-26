@@ -1,33 +1,36 @@
 package com.javachina.service.impl;
 
 import com.blade.ioc.annotation.Service;
-import com.blade.jdbc.AR;
-import com.javachina.kit.DateKit;
+import com.blade.kit.DateKit;
+import com.blade.kit.StringKit;
 import com.javachina.model.Openid;
 import com.javachina.service.OpenIdService;
-
-import blade.kit.StringKit;
 
 @Service
 public class OpenIdServiceImpl implements OpenIdService {
 
 	@Override
-	public Openid getOpenid(String type, Long open_id) {
+	public Openid getOpenid(String type, Integer open_id) {
 		if(null == open_id || StringKit.isBlank(type)){
 			return null;
 		}
-		return AR.find("select * from t_openid where open_id = ? and type = ?", open_id, type).first(Openid.class);
+		return Openid.db.eq("open_id", open_id).eq("type", type).first(Openid.class);
 	}
 
 	@Override
-	public boolean save(String type, Long open_id, Long uid) {
+	public boolean save(String type, Integer open_id, Integer uid) {
 		if(StringKit.isNotBlank(type) && null != open_id && null != uid){
 			try {
 				
-				Long count = AR.find("select count(1) from t_openid where open_id = ? and type = ? and uid = ?", open_id, type, uid).first(Long.class);
+				Long count = Openid.db.eq("open_id", open_id).eq("type", type).eq("uid", uid).count(Openid.class);
 				if(count == 0){
-					AR.update("insert into t_openid(type, open_id, uid, create_time) values(?, ?, ?, ?)", type, open_id,
-							uid, DateKit.getCurrentUnixTime()).executeUpdate();
+					Openid openid = new Openid();
+					openid.type = type;
+					openid.open_id = open_id;
+					openid.uid = uid;
+					openid.create_time = DateKit.getCurrentUnixTime();
+					
+					Openid.db.insert(openid);
 				}
 				return true;
 			} catch (Exception e) {
@@ -38,9 +41,12 @@ public class OpenIdServiceImpl implements OpenIdService {
 	}
 
 	@Override
-	public boolean delete(String type, Long open_id) {
+	public boolean delete(String type, Integer open_id) {
 		if(null != open_id && StringKit.isNotBlank(type)){
-			AR.update("delete from t_openid where type = ? and open_id = ?", type, open_id).executeUpdate();
+			Openid openid = new Openid();
+			openid.type = type;
+			openid.open_id = open_id;
+			Openid.db.delete(openid);
 			return true;
 		}
 		return false;

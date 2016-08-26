@@ -2,46 +2,35 @@ package com.javachina.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.blade.jdbc.AR;
-import com.blade.jdbc.Page;
-import com.blade.jdbc.QueryParam;
+
 import com.blade.ioc.annotation.Service;
+import com.blade.jdbc.Pager;
+import com.blade.kit.PatternKit;
 import com.javachina.model.Userinfo;
 import com.javachina.service.UserinfoService;
-
-import blade.kit.PatternKit;
 
 @Service
 public class UserinfoServiceImpl implements UserinfoService {
 	
 	@Override
-	public Userinfo getUserinfo(Long uid) {
-		return AR.findById(Userinfo.class, uid);
-	}
-		
-	@Override
-	public List<Userinfo> getUserinfoList(QueryParam queryParam) {
-		if(null != queryParam){
-			return AR.find(queryParam).list(Userinfo.class);
-		}
-		return null;
+	public Userinfo getUserinfo(Integer uid) {
+		return Userinfo.db.findByPK(uid, Userinfo.class);
 	}
 	
 	@Override
-	public Page<Userinfo> getPageList(QueryParam queryParam) {
-		if(null != queryParam){
-			return AR.find(queryParam).page(Userinfo.class);
-		}
-		return null;
+	public Pager<Userinfo> getPageList(Integer status, Integer is_essence, String orderBy, int page, int count) {
+		return Userinfo.db.eq("status", status).eq("is_essence", is_essence).orderBy(orderBy).page(page, count, Userinfo.class);
 	}
 	
 	@Override
-	public boolean save(Long uid) {
+	public boolean save(Integer uid) {
 		if(null == uid){
 			return false;
 		}
 		try {
-			AR.update("insert into t_userinfo(uid) values(?)", uid).executeUpdate();
+			Userinfo userinfo = new Userinfo();
+			userinfo.uid = uid;
+			Userinfo.db.insert(userinfo);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,7 +39,7 @@ public class UserinfoServiceImpl implements UserinfoService {
 	}
 	
 	@Override
-	public boolean update(Long uid, String nickName, String jobs, String webSite, 
+	public boolean update(Integer uid, String nickName, String jobs, String webSite, 
 			String github, String weibo, String location, String signature, String instructions) {
 		if(null != uid){
 			StringBuffer updateSql = new StringBuffer("update t_userinfo set ");
@@ -95,7 +84,8 @@ public class UserinfoServiceImpl implements UserinfoService {
 				updateSql = new StringBuffer(updateSql.substring(0, updateSql.length() - 2));
 				updateSql.append(" where uid = ? ");
 				params.add(uid);
-				AR.update(updateSql.toString(), params.toArray()).executeUpdate();
+				
+				Userinfo.db.sql(updateSql.toString(), params.toArray()).execute();
 			}
 			return true;
 		}
@@ -103,9 +93,11 @@ public class UserinfoServiceImpl implements UserinfoService {
 	}
 	
 	@Override
-	public boolean delete(Long uid) {
+	public boolean delete(Integer uid) {
 		if(null != uid){
-			AR.update("delete from t_userinfo where uid = ?", uid).executeUpdate();
+			Userinfo userinfo = new Userinfo(); 
+			userinfo.uid = uid;
+			Userinfo.db.delete(userinfo);
 			return true;
 		}
 		return false;

@@ -7,9 +7,8 @@ import java.util.Map;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
-import com.blade.jdbc.AR;
-import com.blade.jdbc.Page;
-import com.blade.jdbc.QueryParam;
+import com.blade.jdbc.Pager;
+import com.blade.kit.DateKit;
 import com.javachina.ImageTypes;
 import com.javachina.kit.Utils;
 import com.javachina.model.Comment;
@@ -19,124 +18,119 @@ import com.javachina.service.CommentService;
 import com.javachina.service.TopicService;
 import com.javachina.service.UserService;
 
-import blade.kit.DateKit;
-
 @Service
 public class CommentServiceImpl implements CommentService {
-	
+
 	@Inject
 	private UserService userService;
-	
+
 	@Inject
 	private TopicService topicService;
-	
+
 	@Override
-	public Comment getComment(Long cid) {
-		return AR.findById(Comment.class, cid);
+	public Comment getComment(Integer cid) {
+		return Comment.db.findByPK(cid, Comment.class);
 	}
-		
+
 	@Override
-	public List<Comment> getCommentList(QueryParam queryParam) {
-		if(null != queryParam){
-			return AR.find(queryParam).list(Comment.class);
+	public Pager<Map<String, Object>> getPageListMap(Integer tid, Integer uid, String orderby, int page, int count) {
+
+		Pager<Comment> pager = Comment.db.eq("tid", tid).eq("uid", uid).orderBy(orderby).page(page, count,
+				Comment.class);
+		if (null != pager) {
+			return this.getCommentPageMap(pager);
 		}
 		return null;
 	}
-	
-	@Override
-	public Page<Map<String, Object>> getPageListMap(QueryParam queryParam) {
-		if(null != queryParam){
-			Page<Comment> commentPage = AR.find(queryParam).page(Comment.class);
-			return this.getCommentPageMap(commentPage);
-		}
-		return null;
-	}
-	
-	private Page<Map<String, Object>> getCommentPageMap(Page<Comment> commentPage){
-		
-		long totalCount = commentPage.getTotalCount();
-		int page = commentPage.getPage();
-		int pageSize = commentPage.getPageSize();
-		Page<Map<String, Object>> result = new Page<Map<String,Object>>(totalCount, page, pageSize);
-		
-		List<Comment> comments = commentPage.getResults();
-		
-		List<Map<String, Object>> nodeMaps = new ArrayList<Map<String,Object>>();
-		if(null != comments && comments.size() > 0){
-			for(Comment comment : comments){
+
+	private Pager<Map<String, Object>> getCommentPageMap(Pager<Comment> commentPage) {
+
+		long totalCount = commentPage.getTotal();
+		int page = commentPage.getPageNum();
+		int limit = commentPage.getLimit();
+
+		Pager<Map<String, Object>> result = new Pager<Map<String, Object>>(totalCount, page, limit);
+
+		List<Comment> comments = commentPage.getList();
+		List<Map<String, Object>> nodeMaps = new ArrayList<Map<String, Object>>();
+		if (null != comments && comments.size() > 0) {
+			for (Comment comment : comments) {
 				Map<String, Object> map = this.getCommentDetail(comment, null);
-				if(null != map && !map.isEmpty()){
+				if (null != map && !map.isEmpty()) {
 					nodeMaps.add(map);
 				}
 			}
 		}
-		
-		result.setResults(nodeMaps);
-		
+		result.setList(nodeMaps);
 		return result;
 	}
-	
-	private Map<String, Object> getCommentDetail(Comment comment, Long cid) {
+
+	private Map<String, Object> getCommentDetail(Comment comment, Integer cid) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(null == comment){
+		if (null == comment) {
 			comment = this.getComment(cid);
 		}
-		if(null != comment){
-			
-			Long comment_uid = comment.getUid();
+		if (null != comment) {
+
+			Integer comment_uid = comment.uid;
 			User comment_user = userService.getUser(comment_uid);
-			Topic topic = topicService.getTopic(comment.getTid());
-			if(null == comment_user || null == topic){
+			Topic topic = topicService.getTopic(comment.tid);
+			if (null == comment_user || null == topic) {
 				return map;
 			}
 
-			map.put("cid", comment.getCid());
-			map.put("tid", comment.getTid());
-			map.put("role_id", comment_user.getRole_id());
-			map.put("reply_name", comment_user.getLogin_name());
-			map.put("reply_time", comment.getCreate_time());
-			map.put("device", comment.getDevice());
-			map.put("reply_avatar", Utils.getAvatar(comment_user.getAvatar(), ImageTypes.small));
-			map.put("title", topic.getTitle());
-			
-			String content = Utils.markdown2html(comment.getContent());
+			map.put("cid", comment.cid);
+			map.put("tid", comment.tid);
+			map.put("role_id", comment_user.role_id);
+			map.put("reply_name", comment_user.login_name);
+			map.put("reply_time", comment.create_time);
+			map.put("device", comment.device);
+			map.put("reply_avatar", Utils.getAvatar(comment_user.avatar, ImageTypes.small));
+			map.put("title", topic.title);
+
+			String content = Utils.markdown2html(comment.content);
 			map.put("content", content);
 		}
 		return map;
 	}
 
 	@Override
-	public Long save(Long uid, Long toUid, Long tid, String content, String ua) {
+	public Integer save(Integer uid, Integer toUid, Integer tid, String content, String ua) {
+		Comment comment = new Comment();
+		comment.uid = uid;
+		comment.to_uid = toUid;
+		comment.tid = tid;
+		comment.content = content;
+		comment.device = ua;
+		comment.create_time = DateKit.getCurrentUnixTime();
+
 		try {
-			Long cid = (Long) AR.update("insert into t_comment(uid, to_uid, tid, content, device, create_time) values(?, ?, ?, ?, ?, ?)",
-					uid, toUid, tid, content, ua, DateKit.getCurrentUnixTime()).key();
-			return cid;
+			return Comment.db.insert(comment);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	@Override
-	public boolean delete(Long cid) {
-		if(null != cid){
-			AR.update("delete from t_comment where cid = ?", cid).executeUpdate();
+	public boolean delete(Integer cid) {
+		if (null != cid) {
+			Comment comment = new Comment();
+			comment.cid = cid;
+			Comment.db.delete(comment);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Comment getTopicLastComment(Long tid) {
-		return AR.find("select * from t_comment where tid = ? order by cid desc", tid).first(Comment.class);
+	public Comment getTopicLastComment(Integer tid) {
+		return Comment.db.eq("tid", tid).orderBy("cid desc").first(Comment.class);
 	}
 
 	@Override
-	public Long getComments(Long uid) {
-		if(null != uid){
-			return AR.find("select count(1) from t_comment where uid = ?", uid).first(Long.class);
-		}
-		return 0L;
+	public Long getComments(Integer uid) {
+		return Comment.db.eq("uid", uid).count(Long.class);
 	}
-		
+
 }

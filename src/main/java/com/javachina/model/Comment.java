@@ -1,93 +1,41 @@
 package com.javachina.model;
 
-import java.io.Serializable;
-
+import com.blade.jdbc.Model;
+import com.blade.jdbc.annotation.Column;
+import com.blade.jdbc.annotation.GeneratedValue;
+import com.blade.jdbc.annotation.Id;
 import com.blade.jdbc.annotation.Table;
 
 /**
  * Comment对象
  */
-@Table(value = "t_comment", PK = "cid")
-public class Comment implements Serializable {
+@Table(name = "t_comment", cached = false)
+public class Comment extends Model {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long cid;
+	@Id
+	@Column(unique=true)
+	@GeneratedValue 
+	public Integer cid;
 	
 	//评论人uid
-	private Long uid;
+	public Integer uid;
 	
 	//被评论人uid
-	private Long to_uid;
+	public Integer to_uid;
 	
 	//帖子id
-	private Long tid;
+	public Integer tid;
 	
 	//评论内容
-	private String content;
+	public String content;
 	
 	//设备
-	private String device;
+	public String device;
 	
 	//评论时间
-	private Long create_time;
+	public Integer create_time;
 	
-	public Comment(){}
-	
-	public Long getCid() {
-		return cid;
-	}
-
-	public void setCid(Long cid) {
-		this.cid = cid;
-	}
-	
-	public Long getUid() {
-		return uid;
-	}
-
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-	
-	public Long getTo_uid() {
-		return to_uid;
-	}
-
-	public void setTo_uid(Long to_uid) {
-		this.to_uid = to_uid;
-	}
-	
-	public Long getTid() {
-		return tid;
-	}
-
-	public void setTid(Long tid) {
-		this.tid = tid;
-	}
-	
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-	
-	public Long getCreate_time() {
-		return create_time;
-	}
-
-	public void setCreate_time(Long create_time) {
-		this.create_time = create_time;
-	}
-
-	public String getDevice() {
-		return device;
-	}
-
-	public void setDevice(String device) {
-		this.device = device;
-	}
 	
 }

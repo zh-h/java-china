@@ -11,6 +11,6 @@ public interface ActivecodeService {
 	
 	boolean useCode(String code);
 
-	boolean resend(Long uid);
+	boolean resend(Integer uid);
 	
 }
