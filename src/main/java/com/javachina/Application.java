@@ -17,7 +17,6 @@ import com.blade.jdbc.cache.Cache;
 import com.blade.jdbc.cache.DefaultCache;
 import com.bladejava.view.template.JetbrickTemplateEngine;
 import com.javachina.ext.Funcs;
-import com.javachina.ext.Methods;
 import com.javachina.service.SettingsService;
 
 import jetbrick.template.resolver.GlobalResolver;
@@ -30,11 +29,11 @@ public class Application extends Bootstrap {
 	@Override
 	public void init(Blade blade) {
 		blade.loadAppConf("app.properties");
+		blade.basePackage("com.javachina");
 		// 模板引擎
 		JetbrickTemplateEngine jetbrickTemplateEngine = new JetbrickTemplateEngine(BladeWebContext.servletContext());
 		GlobalResolver resolver = jetbrickTemplateEngine.getJetEngine().getGlobalResolver();
 		resolver.registerFunctions(Funcs.class);
-		resolver.registerMethods(Methods.class);
 		Constant.VIEW_CONTEXT = jetbrickTemplateEngine.getJetEngine().getGlobalContext();
 		blade.viewEngin(jetbrickTemplateEngine);
 		
@@ -44,8 +43,8 @@ public class Application extends Bootstrap {
 			Properties props = new Properties();
 			props.load(in);
 			DataBase db = Base.open(DruidDataSourceFactory.createDataSource(props));
-			Cache cache = new DefaultCache();
-			db.enableCache(cache);
+			//Cache cache = new DefaultCache();
+			//db.enableCache(cache);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -68,6 +67,6 @@ public class Application extends Bootstrap {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		Blade.me().app(Application.class).start(EmbedJettyServer.class);
+		Blade.me().enableServer(false).app(Application.class).start(EmbedJettyServer.class);
 	}
 }

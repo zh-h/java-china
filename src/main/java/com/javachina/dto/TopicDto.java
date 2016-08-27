@@ -1,5 +1,6 @@
 package com.javachina.dto;
 
+import com.blade.jdbc.annotation.Column;
 import com.javachina.model.Topic;
 
 public class TopicDto extends Topic{
@@ -11,5 +12,6 @@ public class TopicDto extends Topic{
 	public String avatar;
 	public String node_name;
 	public String node_slug;
+	public Integer comments;
 	
 }

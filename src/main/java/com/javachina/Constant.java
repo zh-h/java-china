@@ -3,6 +3,7 @@ package com.javachina;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blade.Blade;
 import jetbrick.template.JetGlobalContext;
 
 public class Constant {
@@ -23,7 +24,7 @@ public class Constant {
 	// 今日名言
 	public static Map<String, Object> today_famous = new HashMap<String, Object>();
 	
-	public static String SITE_URL = "";
+	public static String SITE_URL = Blade.me().environment().getString("app.site_url");
 	public static String CDN_URL = "";
 	public static String APP_VERSION = "";
 	

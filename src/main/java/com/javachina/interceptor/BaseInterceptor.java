@@ -24,7 +24,7 @@ public class BaseInterceptor implements Interceptor {
 
 	@Override
 	public boolean before(Request request, Response response) {
-
+//		request.attribute("BASE_PATH", Constant.SITE_URL);
 		LoginUser user = SessionKit.getLoginUser();
 
 		if (null == user) {

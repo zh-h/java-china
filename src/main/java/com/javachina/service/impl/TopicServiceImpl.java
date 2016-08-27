@@ -43,10 +43,12 @@ public class TopicServiceImpl implements TopicService {
 
 	@Override
 	public Pager<TopicDto> getTopics(int page, int limit) {
-		String sql = "select a.tid, a.title, a.create_time, a.update_time, b.title as node_name, b.slug as node_slug, c.avatar "
+		String sql = "select a.tid, a.user_name, a.reply_user, a.title, a.create_time, a.update_time, " +
+				"b.title as node_name, b.slug as node_slug, c.avatar, d.comments "
 				+ "from t_topic a "
 				+ "left join t_node b on a.nid = b.nid "
 				+ "left join t_user c on a.user_name = c.login_name "
+				+ "left join t_topiccount d on a.tid = d.tid "
 				+ "where a.status = ?";
 		return Topic.db.sql(sql, 1).orderBy("a.weight desc").page(page, limit, TopicDto.class);
 	}

@@ -22,7 +22,7 @@ public class NodeServiceImpl implements NodeService {
 
 	@Override
 	public Pager<Node> getNodes(String orderBy, int page, int limit) {
-		return Node.db.orderBy(orderBy).page(page, limit, Node.class);
+		return Node.db.orderBy(orderBy).neq("pid", 0).page(page, limit, Node.class);
 	}
 
 	@Override

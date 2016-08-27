@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alibaba.fastjson.JSON;
 import com.blade.kit.StringKit;
 import com.blade.web.http.Request;
 import com.javachina.ImageTypes;
@@ -254,5 +255,9 @@ public class Utils {
 		double seconds = create_time - 1459440000;
 		return Double.parseDouble(String.format("%.2f", order + sign * seconds / 45000));
 	}
-	
+
+	public static String toJSONString(Object object){
+		return JSON.toJSONString(object, true);
+	}
+
 }

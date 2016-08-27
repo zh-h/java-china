@@ -9,10 +9,12 @@ import com.blade.annotation.Route;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.Pager;
 import com.blade.web.http.Response;
+import com.javachina.dto.RestResponse;
 import com.javachina.dto.TopicDto;
+import com.javachina.kit.Utils;
 import com.javachina.service.TopicService;
 
-@Controller(value = "/api", suffix = ".json")
+@Controller(value = "/api/topics", suffix = ".json")
 public class TopicController {
 
 	@Inject
@@ -27,22 +29,27 @@ public class TopicController {
 	 * @param page
 	 * @param limit
 	 */
-	@Route("/topics")
+	@Route("/")
 	public void getTopic(Response response, @RequestParam(value = "nid", required = false) Integer nid,
 			@RequestParam(value = "is_essence", required = false) Integer is_essence,
 			@RequestParam(value = "page", required = false, defaultValue = "1") int page,
 			@RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
 
 		Pager<TopicDto> pager = topicService.getTopics(page, limit);
-		response.json(JSON.toJSONString(pager));
+
+		RestResponse restResponse = RestResponse.build(pager);
+
+		response.json(Utils.toJSONString(restResponse));
 	}
 
-	@Route("/topics/today")
+	@Route("/today")
 	public void getTodayHot(Response response,
 			@RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
 		
 		List<TopicDto> list = topicService.getTodayTopics(limit);
-		response.json(JSON.toJSONString(list));
+		RestResponse restResponse = RestResponse.build(list);
+
+		response.json(Utils.toJSONString(restResponse));
 	}
 
 }

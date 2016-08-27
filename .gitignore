@@ -1,1 +1,17 @@
-/target/
+# Maven #
+target/
+
+# logs #
+logs/
+
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.settings/
+.classpath
+.project
+
+# VUE #
+vue/node_modules/
