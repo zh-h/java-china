@@ -36,7 +36,10 @@ public class BaseInterceptor implements Interceptor {
 
 			RestResponse<String> restResponse = new RestResponse<String>();
 
-			String xtoken = request.header("X-token");
+			String xtoken = request.header("X-Ca-token");
+			String apiVer = request.header("X-Ca-Api-Version");
+			String timestamp = request.header("X-Ca-timestamp");
+
 			if(StringKit.isBlank(xtoken)){
 				restResponse.error("Request Token is null");
 				response.json(Utils.toJSONString(restResponse));
