@@ -1,5 +1,5 @@
 <template>
-    <footer class="bs-docs-footer" role="contentinfo">
+  <footer class="bs-docs-footer" role="contentinfo">
         <div class="container">
             <ul class="bs-docs-footer-links text-muted">
                 <li>当前版本： 1.1</li>
@@ -24,8 +24,5 @@
 </template>
 
 <style>
-    
+
 </style>
-<script>
-    
-</script>

@@ -1,11 +1,13 @@
 <template>
-  <vheader></vheader>
-  <div class="container">
-    <div class="row">
-      <router-view></router-view>
+  <div>
+    <vheader></vheader>
+    <div class="container">
+      <div class="row">
+        <router-view></router-view>
+      </div>
     </div>
+    <vfooter></vfooter>
   </div>
-  <vfooter></vfooter>
 </template>
 
 <script type="text/babel">
@@ -19,7 +21,6 @@
     }
   }
 </script>
-
 <style>
-@import './assets/css/bootstrap.min.css'
+
 </style>

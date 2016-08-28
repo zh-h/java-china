@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <button class="btn btn-primary">Hello</button>
-    </div>
+    <ui-button>Hello world!</ui-button>
 </template>
 <style>
     

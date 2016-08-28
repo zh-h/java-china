@@ -9,7 +9,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="${base_url('')}">Java中国</a>
+              <a class="navbar-brand" href="/">Java中国</a>
           </div>
           
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -20,8 +20,8 @@
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li><a href="">首页</a></li>
-                <li><a href="${base_url('/signup')}">注册</a></li> 
-                <li><a href="${base_url('/signin')}">登录</a></li>
+                <li><a href="/signup">注册</a></li> 
+                <li><a href="/signin">登录</a></li>
               </ul>
               <form class="navbar-form navbar-right" onsubmit="return dispatch();" role="search" method="get" target="_blank">
                 <div class="form-group input-sm">
@@ -33,49 +33,6 @@
     </nav>
 </template>
 
-<script type="text/babel">
-  
-  export default {
-    data () {
-      return {
-        show: true,
-        nav: 'nav',
-        isTop: true,
-        isVisible: true,
-        headlineFinal: ''
-      }
-    },
-    watch: {
-      'headline': function (val, oldVal) {
-        this.show = false
-        setTimeout(() => {
-          this.show = true
-          this.headlineFinal = val
-        }, 400)
-      }
-    },
-    ready () {
-      this.scroll()
-    },
-    methods: {
-      scroll () {
-        let beforeScrollTop = document.body.scrollTop
-        window.onscroll = () => {
-          const afterScrollTop = document.body.scrollTop
-          const delta = afterScrollTop - beforeScrollTop
-          this.isTop = afterScrollTop === 0
-          if (delta === 0) return false
-          beforeScrollTop = afterScrollTop
-          this.isVisible = delta <= 0
-          if (afterScrollTop < 48) {
-            this.isVisible = true
-          }
-        }
-      }
-    }
-  }
-</script>
+<style>
 
-<style scoped>
-  
 </style>
