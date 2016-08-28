@@ -14,7 +14,7 @@ import com.javachina.kit.Utils;
 import com.javachina.model.Node;
 import com.javachina.service.NodeService;
 
-@Controller(value = "/api/nodes", suffix = ".json")
+@Controller(value = "/nodes", suffix = ".json")
 public class NodeController {
 
 	@Inject

@@ -14,7 +14,7 @@ import com.javachina.dto.TopicDto;
 import com.javachina.kit.Utils;
 import com.javachina.service.TopicService;
 
-@Controller(value = "/api/topics", suffix = ".json")
+@Controller(value = "/topics", suffix = ".json")
 public class TopicController {
 
 	@Inject

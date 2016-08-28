@@ -9,7 +9,7 @@ import com.javachina.dto.SiteCount;
 import com.javachina.kit.Utils;
 import com.javachina.service.EnvService;
 
-@Controller(value = "/api/env/", suffix = ".json")
+@Controller(value = "/env/", suffix = ".json")
 public class EnvController {
 
 	@Inject

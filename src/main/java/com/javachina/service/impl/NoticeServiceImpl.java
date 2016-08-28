@@ -101,9 +101,8 @@ public class NoticeServiceImpl implements NoticeService {
 				Topic topic = topicService.getTopic(comment.tid);
 				if(null != topic){
 					String title = topic.title;
-					String content = Utils.markdown2html(comment.content);
 					map.put("title", title);
-					map.put("content", content);
+					//map.put("content", content);
 					map.put("tid", topic.tid);
 				}
 			}
@@ -113,10 +112,10 @@ public class NoticeServiceImpl implements NoticeService {
 			Topic topic = topicService.getTopic(notice.event_id);
 			if(null != topic){
 				String title = topic.title;
-				String content = Utils.markdown2html(topic.content);
+//				String content = Utils.markdown2html(topic.content);
 				
 				map.put("title", title);
-				map.put("content", content);
+//				map.put("content", content);
 				map.put("tid", topic.tid);
 			}
 		}

@@ -4,14 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.blade.Blade;
-import jetbrick.template.JetGlobalContext;
 
 public class Constant {
 
 	public static boolean IS_DEV = true;
-	
-	// 登录用户session key
-	public static final String LOGIN_SESSION_KEY = "login_user";
 
 	public static final String UPLOAD_FOLDER = "assets/temp";
 
@@ -35,8 +31,5 @@ public class Constant {
 	// sendcloud邮件配置
 	public static String MAIL_API_USER;
 	public static String MAIL_API_KEY;
-	
-	public static JetGlobalContext VIEW_CONTEXT = null;
-	public static Map<String, Object> SYS_INFO = null;
 	
 }

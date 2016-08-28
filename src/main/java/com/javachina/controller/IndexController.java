@@ -21,22 +21,5 @@ public class IndexController extends BaseController{
         return getView("index");
     }
 
-    /**
-     * 注册页
-     * @return
-     */
-    @Route(value = "/signup", method = HttpMethod.GET)
-    public ModelAndView signup(){
-        return getView("signup");
-    }
-
-    /**
-     * 登陆页
-     * @return
-     */
-    @Route(value = "/signin", method = HttpMethod.GET)
-    public ModelAndView signin(){
-        return getView("signin");
-    }
 
 }
