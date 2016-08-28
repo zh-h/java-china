@@ -1,18 +1,20 @@
 package com.javachina.interceptor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blade.annotation.Intercept;
 import com.blade.interceptor.Interceptor;
 import com.blade.ioc.annotation.Inject;
+import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
+import com.blade.route.Route;
 import com.blade.web.http.Request;
 import com.blade.web.http.Response;
-import com.javachina.Constant;
-import com.javachina.kit.SessionKit;
-import com.javachina.model.LoginUser;
-import com.javachina.service.UserService;
+import com.javachina.annotation.Permissions;
+import com.javachina.dto.RestResponse;
+import com.javachina.kit.Utils;
+import com.javachina.model.Token;
+import com.javachina.service.TokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Intercept
 public class BaseInterceptor implements Interceptor {
@@ -20,46 +22,44 @@ public class BaseInterceptor implements Interceptor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseInterceptor.class);
 
 	@Inject
-	private UserService userService;
+	private TokenService tokenService;
 
 	@Override
 	public boolean before(Request request, Response response) {
-//		request.attribute("BASE_PATH", Constant.SITE_URL);
-		LoginUser user = SessionKit.getLoginUser();
 
-		if (null == user) {
-			String val = SessionKit.getCookie(request, Constant.USER_IN_COOKIE);
-			if (null != val) {
-				if (StringKit.isNumber(val)) {
-					Integer uid = Integer.valueOf(val);
-					user = userService.getLoginUser(null, uid);
-					SessionKit.setLoginUser(request.session(), user);
-				} else {
-					response.removeCookie(Constant.USER_IN_COOKIE);
-				}
-			}
-		}
+		String reqUri = request.uri();
 
-		String uri = request.uri();
-		if (uri.indexOf("/admin/") != -1) {
-			if (null == user || user.getRole_id() != 1) {
-				response.go("/signin");
+		Route route = request.route();
+		Permissions p = route.getAction().getAnnotation(Permissions.class);
+
+		if(!reqUri.equals("/oauth/authorization.json") && null != p){
+
+			RestResponse<String> restResponse = new RestResponse<String>();
+
+			String xtoken = request.header("X-token");
+			if(StringKit.isBlank(xtoken)){
+				restResponse.error("Request Token is null");
+				response.json(Utils.toJSONString(restResponse));
 				return false;
 			}
-		}
 
-		if (request.method().equals("POST")) {
-			String referer = request.header("Referer");
-			if (StringKit.isBlank(referer) || !referer.startsWith(Constant.SITE_URL)) {
-				response.go("/");
+			Token token = tokenService.getToken(xtoken);
+
+			// 无效
+			if(null == token){
+				restResponse.error("Invalid Token");
+				response.json(Utils.toJSONString(restResponse));
 				return false;
 			}
-			/*
-			 * if(request.isAjax() && !CSRFTokenManager.verify(request,
-			 * response)){ response.text("CSRF ERROR"); return false; }
-			 */
+
+			// 过期
+			if(token.expired_time < DateKit.getCurrentUnixTime()){
+				restResponse.error("Expired Token");
+				response.json(Utils.toJSONString(restResponse));
+				return false;
+			}
+
 		}
-		// CSRFTokenManager.createNewToken(request, response);
 		return true;
 	}
 

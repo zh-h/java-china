@@ -9,7 +9,6 @@ import com.javachina.model.User;
 import com.javachina.service.ActivecodeService;
 import com.javachina.service.SendMailService;
 import com.javachina.service.UserService;
-import com.javachina.service.UserinfoService;
 
 @Service
 public class ActivecodeServiceImpl implements ActivecodeService {
@@ -19,9 +18,6 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 	
 	@Inject
 	private UserService userService;
-	
-	@Inject
-	private UserinfoService userinfoService;
 	
 	@Override
 	public Activecode getActivecode(String code) {
@@ -56,7 +52,7 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 			
 			Activecode.db.insert(temp);
 			
-			userinfoService.save(user.uid);
+//			userinfoService.save(user.uid);
 			
 			if(type.equals("signup")){
 				sendMailService.signup(user.login_name, user.email, code);

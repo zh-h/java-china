@@ -9,6 +9,7 @@ import com.blade.annotation.Route;
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.Pager;
 import com.blade.web.http.Response;
+import com.javachina.annotation.Permissions;
 import com.javachina.dto.RestResponse;
 import com.javachina.dto.TopicDto;
 import com.javachina.kit.Utils;
@@ -43,6 +44,7 @@ public class TopicController {
 	}
 
 	@Route("/today")
+	@Permissions
 	public void getTodayHot(Response response,
 			@RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
 		

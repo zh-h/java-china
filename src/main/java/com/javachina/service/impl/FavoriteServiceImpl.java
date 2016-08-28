@@ -158,10 +158,10 @@ public class FavoriteServiceImpl implements FavoriteService {
 				if(null != favorites && favorites.size() > 0){
 					for(Favorite favorite : favorites){
 						Integer user_id = favorite.event_id;
-						Map<String, Object> userMap = userService.getUserDetail(user_id);
-						if(null != userMap && !userMap.isEmpty()){
-							list.add(userMap);
-						}
+//						Map<String, Object> userMap = userService.getUserDetail(user_id);
+//						if(null != userMap && !userMap.isEmpty()){
+//							list.add(userMap);
+//						}
 					}
 				}
 				result.setList(list);

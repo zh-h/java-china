@@ -101,4 +101,9 @@ public class RestResponse<T> {
                 ", timestamp=" + timestamp +
                 '}';
     }
+
+    public void error(String msg) {
+        this.msg = msg;
+        this.success = false;
+    }
 }

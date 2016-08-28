@@ -14,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSON;
+import com.blade.kit.DateKit;
+import com.blade.kit.HashidKit;
 import com.blade.kit.StringKit;
 import com.blade.web.http.Request;
 import com.javachina.ImageTypes;
@@ -181,4 +183,7 @@ public class Utils {
 		return JSON.toJSONString(object, true);
 	}
 
+	public static String createToken(Integer uid) {
+		return new HashidKit(uid+"", 32).encode(DateKit.getCurrentUnixTime() + uid);
+	}
 }

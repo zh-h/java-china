@@ -871,6 +871,16 @@ VALUES
 	(230,1,'signin','biezhi','116.227.139.125',1461335125),
 	(231,1,'signin','biezhi','116.227.139.125',1461339847);
 
+CREATE TABLE `t_token` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `acess_token` varchar(64) NOT NULL DEFAULT '',
+  `scope` varchar(20) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `expired_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
 /*!40000 ALTER TABLE `t_userlog` ENABLE KEYS */;
 UNLOCK TABLES;
 
