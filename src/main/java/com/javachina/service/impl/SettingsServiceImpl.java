@@ -7,7 +7,6 @@ import java.util.Map;
 import com.blade.ioc.annotation.Service;
 import com.blade.kit.CollectionKit;
 import com.blade.kit.StringKit;
-import com.javachina.Types;
 import com.javachina.model.Comment;
 import com.javachina.model.Settings;
 import com.javachina.model.Topic;
@@ -80,9 +79,9 @@ public class SettingsServiceImpl implements SettingsService {
 		Long users = User.db.eq("status", 1).count(User.class);
 		Long topics = Topic.db.eq("status", 1).count(Topic.class);
 		
-		Settings.db.sql("update t_settings set svalue = ? where skey = ?", users, Types.user_count.toString()).execute();
-		Settings.db.sql("update t_settings set svalue = ? where skey = ?", comments, Types.comment_count.toString()).execute();
-		Settings.db.sql("update t_settings set svalue = ? where skey = ?", topics, Types.topic_count.toString()).execute();
+//		Settings.db.sql("update t_settings set svalue = ? where skey = ?", users, Types.user_count.toString()).execute();
+//		Settings.db.sql("update t_settings set svalue = ? where skey = ?", comments, Types.comment_count.toString()).execute();
+//		Settings.db.sql("update t_settings set svalue = ? where skey = ?", topics, Types.topic_count.toString()).execute();
 		
 		return true;
 	}

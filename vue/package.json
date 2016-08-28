@@ -10,8 +10,13 @@
     "test": ""
   },
   "dependencies": {
-    "vue": "^1.0.21",
-    "babel-runtime": "^6.0.0"
+    "babel-runtime": "^6.0.0",
+    "exports-loader": "^0.6.3",
+    "imports-loader": "^0.6.5",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "style-loader": "^0.13.1",
+    "vue": "^1.0.21"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
@@ -36,6 +41,8 @@
     "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.0.0",
     "vue-loader": "^8.3.0",
+    "vue-resource": "^0.9.3",
+    "vue-router": "^0.7.13",
     "vue-style-loader": "^1.0.0",
     "webpack": "^1.12.2",
     "webpack-dev-middleware": "^1.4.0",

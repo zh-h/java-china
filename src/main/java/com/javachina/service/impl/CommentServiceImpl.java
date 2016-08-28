@@ -9,7 +9,7 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.Pager;
 import com.blade.kit.DateKit;
-import com.javachina.ImageTypes;
+import com.javachina.Constant;
 import com.javachina.kit.Utils;
 import com.javachina.model.Comment;
 import com.javachina.model.Topic;
@@ -85,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
 			map.put("reply_name", comment_user.login_name);
 			map.put("reply_time", comment.create_time);
 			map.put("device", comment.device);
-			map.put("reply_avatar", Utils.getAvatar(comment_user.avatar, ImageTypes.small));
+			map.put("reply_avatar", Utils.getAvatar(comment_user.avatar, Constant.ImageTypes.small));
 			map.put("title", topic.title);
 		}
 		return map;

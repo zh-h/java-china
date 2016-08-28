@@ -31,5 +31,9 @@ public class Constant {
 	// sendcloud邮件配置
 	public static String MAIL_API_USER;
 	public static String MAIL_API_KEY;
-	
+
+	public static enum ImageTypes {
+        small,
+        normal
+    }
 }

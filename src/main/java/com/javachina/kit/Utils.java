@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -18,7 +17,7 @@ import com.blade.kit.DateKit;
 import com.blade.kit.HashidKit;
 import com.blade.kit.StringKit;
 import com.blade.web.http.Request;
-import com.javachina.ImageTypes;
+import com.javachina.Constant;
 
 
 /**
@@ -66,7 +65,7 @@ public class Utils {
 		return users;
 	}
 	
-	public static String getAvatar(String avatar, ImageTypes imageTypes){
+	public static String getAvatar(String avatar, Constant.ImageTypes imageTypes){
 		//return QiniuKit.getUrl(avatar + '-' + imageTypes.toString());
 		return "";
 	}

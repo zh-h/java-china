@@ -9,7 +9,6 @@ import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.Pager;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.javachina.Types;
 import com.javachina.model.Favorite;
 import com.javachina.model.Topic;
 import com.javachina.service.FavoriteService;
@@ -59,19 +58,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 				Favorite.db.delete(favorite);
 				count = -1;
 			}
-			
-			// 收藏帖子
-			if(type.equals(Types.topic.toString())){
-				topicCountService.update(Types.favorites.toString(), event_id, count);
-				//topicService.updateWeight(event_id);
-			}
-			
-			// 帖子点赞
-			if(type.equals(Types.love.toString())){
-				topicCountService.update(Types.loves.toString(), event_id, count);
-				//topicService.updateWeight(event_id);
-			}
-			
+
 			return count;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,7 +93,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 				count = 10;
 			}
 			
-			Pager<Favorite> faPage = Favorite.db.eq("type", Types.topic.toString()).eq("uid", uid).orderBy("id desc").page(page, count, Favorite.class);
+			Pager<Favorite> faPage = Favorite.db.eq("type", "topic").eq("uid", uid).orderBy("id desc").page(page, count, Favorite.class);
 			if(null != faPage && faPage.getTotal() > 0){
 				long totalCount = faPage.getTotal();
 				int page_ = faPage.getPageNum();
@@ -145,7 +132,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 				count = 10;
 			}
 			
-			Pager<Favorite> faPage = Favorite.db.eq("type", Types.following.toString()).eq("uid", uid).orderBy("id desc").page(page, count, Favorite.class);
+			Pager<Favorite> faPage = Favorite.db.eq("type", "following").eq("uid", uid).orderBy("id desc").page(page, count, Favorite.class);
 			if(null != faPage && faPage.getTotal() > 0){
 				long totalCount = faPage.getTotal();
 				int page_ = faPage.getPageNum();
@@ -174,7 +161,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 	@Override
 	public List<Map<String, Object>> getMyNodes(Integer uid) {
 		if(null != uid){
-			List<Favorite> favorites = Favorite.db.eq("type", Types.node.toString()).eq("uid", uid).orderBy("id desc").list(Favorite.class);
+			List<Favorite> favorites = Favorite.db.eq("type", "node").eq("uid", uid).orderBy("id desc").list(Favorite.class);
 			if(null != favorites && favorites.size() > 0){
 				List<Map<String, Object>> result = new ArrayList<Map<String,Object>>(favorites.size());
 //				for(Favorite favorite : favorites){

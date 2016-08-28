@@ -10,8 +10,6 @@ import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.Pager;
 import com.blade.kit.DateKit;
 import com.blade.kit.StringKit;
-import com.javachina.Types;
-import com.javachina.kit.Utils;
 import com.javachina.model.Comment;
 import com.javachina.model.Notice;
 import com.javachina.model.Topic;
@@ -95,7 +93,7 @@ public class NoticeServiceImpl implements NoticeService {
 		map.put("create_time", notice.create_time);
 		map.put("user_name", user.login_name);
 		
-		if(notice.type.equals(Types.comment_at.toString()) || notice.type.equals(Types.comment.toString())){
+		if(notice.type.equals("comment_at") || notice.type.equals("comment")){
 			Comment comment = commentService.getComment(notice.event_id);
 			if(null != comment){
 				Topic topic = topicService.getTopic(comment.tid);
@@ -108,7 +106,7 @@ public class NoticeServiceImpl implements NoticeService {
 			}
 		}
 		
-		if(notice.type.equals(Types.topic_at.toString())){
+		if(notice.type.equals("topic_at")){
 			Topic topic = topicService.getTopic(notice.event_id);
 			if(null != topic){
 				String title = topic.title;

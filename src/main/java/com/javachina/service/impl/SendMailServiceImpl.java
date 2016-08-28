@@ -8,7 +8,6 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.kit.http.HttpRequest;
 import com.blade.kit.json.JSONArray;
 import com.blade.kit.json.JSONObject;
-import com.javachina.Actions;
 import com.javachina.Constant;
 import com.javachina.service.SendMailService;
 import com.javachina.service.UserlogService;
@@ -50,7 +49,7 @@ public class SendMailServiceImpl implements SendMailService {
 		
 		LOGGER.info(body);
 		
-		userlogService.save(0, Actions.SEND_MAIL, email + ":" + code + ":" + "signup");
+//		userlogService.save(0, Actions.SEND_MAIL, email + ":" + code + ":" + "signup");
 		
 		LOGGER.info("user {} signup, send mail [{}] success, code = [{}]", username, email, code);
 	}
@@ -80,7 +79,7 @@ public class SendMailServiceImpl implements SendMailService {
 		
 		LOGGER.info(body);
 		
-		userlogService.save(0, Actions.SEND_MAIL, email + ":" + code + ":" + "forgot");
+//		userlogService.save(0, Actions.SEND_MAIL, email + ":" + code + ":" + "forgot");
 		
 		LOGGER.info("user {} forgot, send mail [{}] success, code = [{}]", username, email, code);
 	}
