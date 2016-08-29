@@ -24,5 +24,5 @@ router.redirect({
 //独立出来的路由
 RouterMap(router)
 
-router.start(App, 'body')
+router.start(App, '#app')
 
