@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>com.bladejava</groupId>
 			<artifactId>blade-core</artifactId>
-			<version>1.6.4</version>
+			<version>1.6.5</version>
 		</dependency>
 		<!-- 数据库操作 -->
 		<dependency>
@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>com.bladejava</groupId>
 			<artifactId>blade-embed-jetty</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.alibaba</groupId>

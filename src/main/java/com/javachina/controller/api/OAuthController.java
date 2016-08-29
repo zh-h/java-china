@@ -13,7 +13,7 @@ import com.javachina.model.User;
 import com.javachina.service.TokenService;
 import com.javachina.service.UserService;
 
-@Controller(value = "/oauth", suffix = ".json")
+@Controller(value = "oauth", suffix = ".json")
 public class OAuthController {
 
     @Inject

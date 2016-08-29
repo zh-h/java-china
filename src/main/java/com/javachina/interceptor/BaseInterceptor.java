@@ -13,13 +13,11 @@ import com.javachina.dto.RestResponse;
 import com.javachina.kit.Utils;
 import com.javachina.model.Token;
 import com.javachina.service.TokenService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Intercept
 public class BaseInterceptor implements Interceptor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseInterceptor.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(BaseInterceptor.class);
 
 	@Inject
 	private TokenService tokenService;

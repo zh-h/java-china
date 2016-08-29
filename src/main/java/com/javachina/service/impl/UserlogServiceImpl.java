@@ -1,6 +1,6 @@
 package com.javachina.service.impl;
 
-import com.blade.context.BladeWebContext;
+import com.blade.context.ApplicationWebContext;
 import com.blade.ioc.annotation.Service;
 import com.blade.kit.DateKit;
 import com.javachina.kit.Utils;
@@ -13,7 +13,7 @@ public class UserlogServiceImpl implements UserlogService {
 	
 	@Override
 	public void save(final Integer uid, final String action, final String content) {
-		final String ip = Utils.getIpAddr(BladeWebContext.request());
+		final String ip = Utils.getIpAddr(ApplicationWebContext.request());
 		Runnable t = new Runnable() {
 			@Override
 			public void run() {

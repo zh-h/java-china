@@ -1,8 +1,8 @@
 package com.javachina.controller;
 
 import com.blade.annotation.Controller;
+import com.blade.annotation.RequestParam;
 import com.blade.annotation.Route;
-import com.blade.kit.io.StringBuilderWriter;
 import com.blade.view.ModelAndView;
 import com.blade.web.http.HttpMethod;
 
@@ -17,7 +17,8 @@ public class IndexController extends BaseController{
      * @return
      */
     @Route(value = "/", method = HttpMethod.GET)
-    public ModelAndView index(){
+    public ModelAndView index(@RequestParam("name") String name){
+    	System.out.println("name = " + name);
         return getView("index");
     }
 
