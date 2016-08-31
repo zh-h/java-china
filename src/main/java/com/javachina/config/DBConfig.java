@@ -21,9 +21,6 @@ public class DBConfig implements BaseConfig {
 	
 	@Override
 	public void config(ApplicationConfig applicationConfig) {
-		
-		LOGGER.info("开始配置数据库");
-		
 		// 配置数据库
 		try {
 			InputStream in = Application.class.getClassLoader().getResourceAsStream("druid.properties");

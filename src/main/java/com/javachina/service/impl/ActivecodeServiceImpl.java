@@ -7,14 +7,10 @@ import com.blade.kit.StringKit;
 import com.javachina.model.Activecode;
 import com.javachina.model.User;
 import com.javachina.service.ActivecodeService;
-import com.javachina.service.SendMailService;
 import com.javachina.service.UserService;
 
 @Service
 public class ActivecodeServiceImpl implements ActivecodeService {
-	
-	@Inject
-	private SendMailService sendMailService;
 	
 	@Inject
 	private UserService userService;
@@ -55,11 +51,11 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 //			userinfoService.save(user.uid);
 			
 			if(type.equals("signup")){
-				sendMailService.signup(user.login_name, user.email, code);
+			//	sendMailService.signup(user.login_name, user.email, code);
 			}
 			
 			if(type.equals("forgot")){
-				sendMailService.forgot(user.login_name, user.email, code);
+			//	sendMailService.forgot(user.login_name, user.email, code);
 			}
 			
 			return code;
@@ -105,7 +101,6 @@ public class ActivecodeServiceImpl implements ActivecodeService {
 				
 				Activecode.db.insert(temp);
 				
-				sendMailService.signup(user.login_name, user.email, code);
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();

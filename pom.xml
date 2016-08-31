@@ -19,6 +19,11 @@
 			<artifactId>blade-core</artifactId>
 			<version>1.6.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.bladejava</groupId>
+			<artifactId>blade-aop</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<!-- 数据库操作 -->
 		<dependency>
 			<groupId>com.bladejava</groupId>
