@@ -1,4 +1,4 @@
-import com.javachina.kit.Utils;
+import org.javachina.kit.Utils;
 
 public class TestMain {
 
