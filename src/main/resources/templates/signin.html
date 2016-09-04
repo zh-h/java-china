@@ -7,16 +7,14 @@
 					<div class=center-wrapper>
 						<div class="center-content">
 							<div class="row no-margin col-md-8">
-								<form id="signin_form" role="form" action="${base_url('/signin')}" class="form-layout" method="post"/>
+								<form id="signin_form" role="form" class="form-layout">
 									<p class="text-center mb30">欢迎来到JavaChina, 请输入账号登录。</p>
 									#if(null != error)
 									<div class="alert alert-danger">${error}</div>
 									#end
 									<div class=form-inputs>
-										<input type="text" class="form-control input-lg" name="login_name"
-											placeholder="请输入账号或者邮箱" required="required" value="${login_name}"/> 
-										<input type="password" class="form-control input-lg" name="pass_word"
-											placeholder="请输入登录密码" required="required" />
+										<input type="text" class="form-control input-lg" name="user_name" placeholder="请输入账号或者邮箱" required="required" />
+										<input type="password" class="form-control input-lg" name="pass_word" placeholder="请输入登录密码" required="required" />
 										<label class="cb-checkbox cb-md">
 											<span class="cb-inner"><i><input type="checkbox" name="rememberme" checked="checked"/></i></span>记住我
 										</label>
@@ -25,9 +23,9 @@
 										<span class="ladda-label">登&nbsp;录</span>
 									</button>
 									<p>
-										<a href="${base_url('/signup')}">注册账号</a> ·
-										<a href="${base_url('/oauth/github')}">使用Github帐号登录</a> ·
-										<a href="${base_url('/forgot')}">忘记密码?</a>
+										<a href="/signup">注册账号</a> ·
+										<a href="/oauth/github">使用Github帐号登录</a> ·
+										<a href="/forgot">忘记密码?</a>
 									</p>
 								</form>
 							</div>
@@ -46,7 +44,18 @@ $('#signin_form .ladda-button').on('click', function(){
 	if(form.checkValidity()) {
 		var obj = Ladda.create(this);
 		obj.start();
-		$('#signin_form').submit();
+		$.post('/signin', $('#signin_form').serialize(), function (result) {
+			obj.stop();
+			if(result && result.success){
+				window.location.href = '/';
+			} else{
+				if(result.msg){
+					alertError(result.msg);
+				} else{
+					alertError('服务器出现异常');
+				}
+			}
+		});
 	}
 	return true;
 });

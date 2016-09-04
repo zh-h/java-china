@@ -1,7 +1,7 @@
 #include("./common/header.html", {site_title:"编辑帖子"})
-<link rel="stylesheet" href="${base}/assets/lib/highlight/styles/default.css" />
-<link rel="stylesheet" href="${base}/assets/lib/highlight/styles/github.css" />
-<script src="${base}/assets/lib/highlight/highlight.pack.js"></script>
+<link rel="stylesheet" href="/static/lib/highlight/styles/default.css" />
+<link rel="stylesheet" href="/static/lib/highlight/styles/github.css" />
+<script src="/static/lib/highlight/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 <div class="container">
     <div class="row">
@@ -11,7 +11,6 @@
                     <h3 class="panel-title">编辑帖子</h3>
                 </div>
                 <div class="panel-body">
-                	#if(null!=error)<div class="alert alert-danger">${error}</div>#end
                 	<form id="topic-edit" accept-charset="utf-8" role="form" onsubmit="return topic.edit();">
                         <div class="form-group">
                             <label for="title">标题</label>
@@ -37,7 +36,6 @@
 			                    #end
                             </select>
                         </div>
-                        #end
                         <div class="form-group">
                             <label for="nid">帖子内容</label>
 	                        <div class="form-group">

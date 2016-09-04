@@ -60,7 +60,12 @@ public class TopicServiceImpl implements TopicService {
 		}
 		return null;
 	}
-	
+
+	@Override
+	public long getTopics(String user_name) {
+		return Topic.db.eq("user_name", user_name).eq("status", 1).count(Topic.class);
+	}
+
 	@Override
 	public Pager<TopicDto> getTopics(Integer nid, int page, int limit) {
 		String sql = "select a.tid, a.user_name, a.reply_user, a.title, a.create_time, a.update_time, " +

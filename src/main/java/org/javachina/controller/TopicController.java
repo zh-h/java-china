@@ -42,8 +42,7 @@ public class TopicController extends BaseController{
     @Route(value = "/", method = HttpMethod.GET)
     public ModelAndView index(ModelAndView mav,
     		@RequestParam(value="page", required = false, defaultValue = "1") int page,
-    		@RequestParam String tab
-    		){
+    		@RequestParam String tab){
     	
     	Integer nid = null;
     	if(StringKit.isNotBlank(tab)){
@@ -80,5 +79,23 @@ public class TopicController extends BaseController{
     	mav.setView("topic_detail");
         return mav;
     }
-    
+
+	@Route(value = "/topic/add", method = HttpMethod.GET)
+	public ModelAndView topicAdd(ModelAndView mav){
+		List<NodeDto> nodes = nodeService.getNodes();
+		mav.add("nodes", nodes);
+		mav.setView("topic_add");
+		return mav;
+	}
+
+	@Route(value = "/topic/edit/:tid", method = HttpMethod.GET)
+	public ModelAndView topicAdd(ModelAndView mav, @PathVariable int tid){
+		List<NodeDto> nodes = nodeService.getNodes();
+		TopicDto topicDto = topicService.getTopicDetail(tid);
+		mav.add("nodes", nodes);
+		mav.add("topic", topicDto);
+		mav.setView("topic_edit");
+		return mav;
+	}
+
 }

@@ -141,7 +141,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public Long getNotices(Integer uid) {
 		if(null != uid){
-			return Notice.db.eq("is_read", 0).eq("to_uid", uid).count(Long.class);
+			return Notice.db.eq("is_read", 0).eq("to_uid", uid).count(Notice.class);
 		}
 		return 0L;
 	}

@@ -11,7 +11,9 @@ public interface TopicService {
 	Topic getTopic(Integer tid);
 	
 	TopicDto getTopicDetail(Integer tid);
-	
+
+	long getTopics(String user_name);
+
 	Pager<TopicDto> getTopics(Integer nid, int page, int limit);
 
 	List<TopicDto> getTodayTopics(int limit);

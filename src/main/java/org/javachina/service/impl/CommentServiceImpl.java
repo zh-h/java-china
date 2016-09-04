@@ -130,7 +130,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public Long getComments(Integer uid) {
-		return Comment.db.eq("uid", uid).count(Long.class);
+		return Comment.db.eq("uid", uid).count(Comment.class);
 	}
 
 }
