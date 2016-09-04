@@ -12,7 +12,7 @@ var comment_members = [];
                 <div class="panel-heading pb0">
                     <div class="pull-right">
                     	<a href="/member/${topic.user_name}" title="${topic.user_name}">
-                    		<img class="avatar avatar-sm img-circle" src="${topic.avatar}" alt="${topic.user_name}">
+                    		<img class="avatar avatar-sm img-circle" src="${cdn}/${topic.avatar}" alt="${topic.user_name}">
                     	</a>
                     </div>
                     <p><a href="/">首页</a> / <a href="/go/${topic.node_slug}">$!{topic.node_name}</a></p>
@@ -81,12 +81,12 @@ var comment_members = [];
                             <a href="javascript:void(0);" alt="${comment.reply_name}" class="pull-right text-muted at-user">
                             	<i class="fa fa-mail-forward"></i> #${for.index}
                             </a>
-                            <a class="media-left" href="${base_url('/member/') + comment.reply_name}">
-                                <img class="avatar avatar-sm img-circle" src="${comment.reply_avatar}" alt="${comment.reply_name}">
+                            <a class="media-left" href="/member/${comment.reply_name}">
+                                <img class="avatar avatar-sm img-circle" src="${cdn}/${comment.reply_avatar}" alt="${comment.reply_name}">
                             </a>
                             <div class="media-body">
                                 <h4 class="media-heading topic-list-heading">
-	                                <a href="${base_url('/member/') + comment.reply_name}">
+	                                <a href="/member/${comment.reply_name}">
 	                                	${comment.reply_name}
 	                                	#if(comment.role_id <= 3)
 		                                &nbsp;<i class="fa fa-slideshare"></i> 
@@ -131,7 +131,7 @@ var comment_members = [];
 	                #include("./common/emoji.html")
 		           	#else
 	                <div class="well text-center">
-                    	<a href="${base_url('/signup')}">注册</a> 参与讨论 or <a href="${base_url('/signin')}">登录</a>
+                    	<a href="/signup">注册</a> 参与讨论 or <a href="/signin">登录</a>
                     </div>
 	                #end
                 </div>

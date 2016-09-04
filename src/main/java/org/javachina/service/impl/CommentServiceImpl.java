@@ -86,8 +86,10 @@ public class CommentServiceImpl implements CommentService {
 			map.put("reply_name", comment_user.login_name);
 			map.put("reply_time", comment.create_time);
 			map.put("device", comment.device);
-			map.put("reply_avatar", Utils.getAvatar(comment_user.avatar, Constant.ImageTypes.small));
+			map.put("reply_avatar", comment_user.avatar);
 			map.put("title", topic.title);
+			String content = Utils.markdown2html(comment.content);
+			map.put("content", content);
 		}
 		return map;
 	}

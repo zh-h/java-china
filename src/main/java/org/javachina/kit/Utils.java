@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -19,6 +20,10 @@ import com.blade.kit.DateKit;
 import com.blade.kit.HashidKit;
 import com.blade.kit.StringKit;
 import com.blade.mvc.http.Request;
+import org.javachina.ext.ExtFuncs;
+import org.javachina.ext.markdown.BlockEmitter;
+import org.javachina.ext.markdown.Configuration;
+import org.javachina.ext.markdown.Processor;
 
 /**
  * 工具类
@@ -150,7 +155,82 @@ public class Utils {
 	public static void run(Runnable t){
 		Executors.newSingleThreadExecutor().execute(t);
 	}
-	
+
+	final static Configuration config = Configuration.builder()
+			.setSafeMode(true)
+			.setCodeBlockEmitter(new CodeBlockEmitter())
+			// Fenced code blocks are only available in 'extended mode'
+			.forceExtentedProfile()
+			.build();
+
+	public static class CodeBlockEmitter implements BlockEmitter {
+		@Override
+		public void emitBlock(final StringBuilder out, final List<String> lines, final String meta) {
+			out.append("<pre><code");
+			if (meta != null && !meta.isEmpty()) {
+//				out.append(" class=\"language-");
+				out.append(" class=\"");
+				out.append(meta);
+				out.append('"');
+			}
+			out.append(">\r\n");
+			for (final String l : lines) {
+				escapedAdd(out, l);
+				out.append('\n');
+			}
+			out.append("</code></pre>");
+		}
+	}
+
+	public static void escapedAdd(final StringBuilder sb, final String str) {
+		for (int i = 0; i < str.length(); i++) {
+			final char ch = str.charAt(i);
+			if (ch < 33 || Character.isWhitespace(ch) || Character.isSpaceChar(ch)) {
+				sb.append(' ');
+			} else {
+				switch (ch) {
+					case '"':
+						sb.append("&quot;");
+						break;
+					case '\'':
+						sb.append("&apos;");
+						break;
+					case '<':
+						sb.append("&lt;");
+						break;
+					case '>':
+						sb.append("&gt;");
+						break;
+					case '&':
+						sb.append("&amp;");
+						break;
+					default:
+						sb.append(ch);
+						break;
+				}
+			}
+		}
+	}
+
+	public static String markdown2html(String content) {
+		if(StringKit.isBlank(content)){
+			return content;
+		}
+
+		String member = ExtFuncs.base_url("/member/");
+		String content_ = content.replaceAll("@([a-zA-Z_0-9-]+)\\s", "<a href='"+ member +"$1'>@$1</a>&nbsp;");
+
+		String processed = Processor.process(content_, config);
+
+		if(processed.indexOf("[mp3:") != -1){
+			processed = processed.replaceAll("\\[mp3:(\\d+)\\]", "<iframe frameborder='no' border='0' marginwidth='0' marginheight='0' width=330 height=86 src='http://music.163.com/outchain/player?type=2&id=$1&auto=0&height=66'></iframe>");
+		}
+		if(processed.indexOf("https://gist.github.com/") != -1){
+			processed = processed.replaceAll("&lt;script src=\"https://gist.github.com/(\\w+)/(\\w+)\\.js\">&lt;/script>", "<script src=\"https://gist.github.com/$1/$2\\.js\"></script>");
+		}
+		return ExtFuncs.emoji(processed);
+	}
+
 	/**
 	 * 计算帖子权重
 	 * 

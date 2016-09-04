@@ -41,6 +41,10 @@
 			<artifactId>blade-jdbc</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.bladejava</groupId>
+			<artifactId>blade-patchca</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.38</version>

@@ -8,7 +8,7 @@
 						<div class=center-content>
 							#if(null == info)
 							<div class="row no-margin col-md-8">
-								<form role="form" action="${base_url('/signup')}" class="form-layout" method="post">
+								<form role="form" action="/signup" class="form-layout" method="post">
 									<p class="text-center mb30">创建一个新账号</p>
 									#if(null != error)
 									<div class="alert alert-danger">${error}</div>
@@ -36,7 +36,7 @@
 													<input type="text" class="form-control" name="auth_code" placeholder="请输入验证码" maxlength="6" required="required"/>
 												</div>
 												<div class="col-sm-5">
-													<img id="captcha" style="cursor: pointer;" src="${base_url('/captcha')}" alt="点击切换验证码" title="点击切换验证码" width="150" height="30" onclick="change_captcha()"/>
+													<img id="captcha" style="cursor: pointer;" src="/captcha" alt="点击切换验证码" title="点击切换验证码" width="150" height="30" onclick="change_captcha()"/>
 												</div>
 											</div>
 										</div>

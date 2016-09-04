@@ -1,84 +1,56 @@
 package org.javachina.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.javachina.dto.NodeDto;
-import org.javachina.dto.TopicDto;
-import org.javachina.model.Node;
-import org.javachina.service.CommentService;
-import org.javachina.service.NodeService;
-import org.javachina.service.TopicService;
-
-import com.blade.ioc.annotation.Inject;
-import com.blade.jdbc.Pager;
-import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.Controller;
-import com.blade.mvc.annotation.PathVariable;
-import com.blade.mvc.annotation.RequestParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
+import com.blade.mvc.http.Request;
+import com.blade.mvc.http.Response;
 import com.blade.mvc.view.ModelAndView;
+import com.blade.patchca.DefaultPatchca;
 
-/**
- * Created by oushaku on 16/8/26.
- */
 @Controller
-public class IndexController extends BaseController{
+public class IndexController {
 
-	@Inject
-	private NodeService nodeService;
-	
-	@Inject
-	private TopicService topicService;
-	
-	@Inject
-	private CommentService commentService;
-	
-    /**
-     * 首页
-     * @return
-     */
-    @Route(value = "/", method = HttpMethod.GET)
-    public ModelAndView index(ModelAndView mav,
-    		@RequestParam(value="page", required = false, defaultValue = "1") int page,
-    		@RequestParam String tab
-    		){
-    	
-    	Integer nid = null;
-    	if(StringKit.isNotBlank(tab)){
-    		Node node = nodeService.getNode(tab);
-    		if(null != node){
-    			nid = node.nid;
-    		}
-    	}
-    	
-    	List<Node> hot_nodes = nodeService.getNodes("topics desc", 1, 10).getList();
-    	Pager<TopicDto> topicPage = topicService.getTopics(nid, page, 10);
-    	List<NodeDto> nodes = nodeService.getNodes();
-    	
-    	mav.add("hot_nodes", hot_nodes);
-    	mav.add("nodes", nodes);
-    	mav.add("topicPage", topicPage);
-    	mav.add("tab", tab);
-    	mav.setView("home");
+    private DefaultPatchca patchca = new DefaultPatchca();
+
+    @Route(value = "signin", method = HttpMethod.GET)
+    public ModelAndView signin(ModelAndView mav){
+        mav.setView("signin");
         return mav;
     }
-    
-    /**
-     * 帖子详情页
-     * @return
-     */
-    @Route(value = "/topic/:tid", method = HttpMethod.GET)
-    public ModelAndView topicDetail(ModelAndView mav, @PathVariable int tid,
-    		@RequestParam(value="page", required = false, defaultValue = "1") int page){
-    	TopicDto topic = topicService.getTopicDetail(tid);
-    	Pager<Map<String, Object>> commentPage = commentService.getPageListMap(tid, null, "create_time asc", page, 10);
-    	
-    	mav.add("topic", topic);
-    	mav.add("commentPage", commentPage);
-    	mav.setView("topic_detail");
+
+    @Route(value = "signup", method = HttpMethod.GET)
+    public ModelAndView signup(ModelAndView mav){
+        mav.setView("signup");
         return mav;
     }
-    
+
+    @Route(value = "captcha", method = HttpMethod.GET)
+    public void captcha(Request request, Response response){
+        patchca.size(200, 40).render(request, response);
+    }
+
+    @Route(value = "markdown", method = HttpMethod.GET)
+    public ModelAndView markdown(ModelAndView mav){
+        mav.setView("markdown");
+        return mav;
+    }
+
+    @Route(value = "faq", method = HttpMethod.GET)
+    public ModelAndView faq(ModelAndView mav){
+        mav.setView("faq");
+        return mav;
+    }
+
+    @Route(value = "about", method = HttpMethod.GET)
+    public ModelAndView about(ModelAndView mav){
+        mav.setView("about");
+        return mav;
+    }
+
+    @Route(value = "donate", method = HttpMethod.GET)
+    public ModelAndView donate(ModelAndView mav) {
+        mav.setView("donate");
+        return mav;
+    }
 }

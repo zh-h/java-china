@@ -6,6 +6,7 @@ import com.blade.ioc.annotation.Inject;
 import com.blade.ioc.annotation.Service;
 import com.blade.jdbc.Pager;
 import org.javachina.dto.TopicDto;
+import org.javachina.kit.Utils;
 import org.javachina.model.Topic;
 import org.javachina.service.CommentService;
 import org.javachina.service.NodeService;
@@ -44,7 +45,7 @@ public class TopicServiceImpl implements TopicService {
 	@Override
 	public TopicDto getTopicDetail(Integer tid) {
 		if(null != tid){
-			String sql = "select a.tid, a.user_name, a.reply_user, a.title, a.create_time, a.update_time, " +
+			String sql = "select a.tid, a.user_name, a.reply_user, a.title, a.content, a.create_time, a.update_time, " +
 					"b.title as node_name, b.slug as node_slug, c.avatar, d.comments "
 					+ "from t_topic a "
 					+ "left join t_node b on a.nid = b.nid "
@@ -52,7 +53,10 @@ public class TopicServiceImpl implements TopicService {
 					+ "left join t_topiccount d on a.tid = d.tid "
 					+ "where a.status = ? ";
 			
-			return Topic.db.sql(sql, 1).first(TopicDto.class);
+			TopicDto topicDto = Topic.db.sql(sql, 1).first(TopicDto.class);
+			String content = Utils.markdown2html(topicDto.content);
+			topicDto.content = content;
+			return topicDto;
 		}
 		return null;
 	}
