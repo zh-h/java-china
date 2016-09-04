@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>#if(title != null && title != '')${title} - #end ${sys_info.site_title ?! 'Java中国'} #if(title=='') - 优质开发者社区#end</title>
-    <link type="text/css" rel="stylesheet" href="${base}/assets/styles/main.min.css?ver=${version}" />
-    <link type="text/css" rel="stylesheet" href="${cdn}/assets/font-awesome-4.6.1/css/font-awesome.min.css?ver=${version}" />
-    <link type="text/css" rel="stylesheet" href="${cdn}/assets/lib/sweet-alert/sweetalert.min.css?ver=${version}" />
-    <link type="text/css" rel="stylesheet" href="${cdn}/assets/lib/ladda/ladda-themeless.min.css?ver=${version}" />
-    <link type="text/css" rel="stylesheet" href="${cdn}/assets/lib/nprogress/nprogress.min.css?ver=${version}" />
-    <script type="text/javascript" src="${cdn}/assets/scripts/jquery-2.2.0.min.js?ver=${version}"></script>
-    <link rel="shortcut icon" href="${cdn}/assets/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="/static/styles/main.min.css?ver=${version}" />
+    <link type="text/css" rel="stylesheet" href="/static/font-awesome-4.6.1/css/font-awesome.min.css?ver=${version}" />
+    <link type="text/css" rel="stylesheet" href="/static/lib/sweet-alert/sweetalert.min.css?ver=${version}" />
+    <link type="text/css" rel="stylesheet" href="/static/lib/ladda/ladda-themeless.min.css?ver=${version}" />
+    <link type="text/css" rel="stylesheet" href="/static/lib/nprogress/nprogress.min.css?ver=${version}" />
+    <script type="text/javascript" src="/static/scripts/jquery-2.2.0.min.js?ver=${version}"></script>
+    <link rel="shortcut icon" href="/static/favicon.ico" />
 	<meta name="description" content="${sys_info.site_description ?! ''}" />
     <meta name="keywords" content="${sys_info.site_keywords ?! ''}" />
     <meta name="csrf-token" content="${csrf_token}"/>
@@ -34,31 +34,31 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="${base_url('')}">Java中国</a>
+                <a class="navbar-brand" href="/">Java中国</a>
             </div>
 			
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="#if(active=='markdown')active#end"><a href="${base_url('/markdown')}">MarkDown</a></li>
-                    <li class="#if(active=='essence')active#end"><a href="${base_url('/essence')}">精华贴</a></li>
+                    <li class="#if(active=='markdown')active#end"><a href="/markdown">MarkDown</a></li>
+                    <li class="#if(active=='essence')active#end"><a href="/essence">精华贴</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                <li><a href="${base_url('')}">首页</a></li>
+                <li><a href="/">首页</a></li>
                 #if(null == login_user)
-                    <li class="#if(active=='signup')active#end"><a href="${base_url('/signup')}">注册</a></li>
-                    <li class="#if(active=='signin')active#end"><a href="${base_url('/signin')}">登录</a></li>
+                    <li class="#if(active=='signup')active#end"><a href="/signup">注册</a></li>
+                    <li class="#if(active=='signin')active#end"><a href="/signin">登录</a></li>
                 #else
                 	<li>
-                    	<a href="${base_url('/settings')}">设置</a>
+                    	<a href="/settings">设置</a>
                     </li>
                 	#if(login_user.role_id < 2)
                 	<li>
-                    	<a href="${base_url('/admin')}">进入后台</a>
+                    	<a href="/admin">进入后台</a>
                     </li>
                 	#end
                     <li>
-                    	<a href="${base_url('/logout')}">注销</a>
+                    	<a href="/logout">注销</a>
                     </li>
                 #end
                 </ul>

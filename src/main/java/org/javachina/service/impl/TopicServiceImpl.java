@@ -40,21 +40,46 @@ public class TopicServiceImpl implements TopicService {
 	public Topic getTopic(Integer tid) {
 		return Topic.db.findByPK(tid, Topic.class);
 	}
-
+	
 	@Override
-	public Pager<TopicDto> getTopics(int page, int limit) {
+	public TopicDto getTopicDetail(Integer tid) {
+		if(null != tid){
+			String sql = "select a.tid, a.user_name, a.reply_user, a.title, a.create_time, a.update_time, " +
+					"b.title as node_name, b.slug as node_slug, c.avatar, d.comments "
+					+ "from t_topic a "
+					+ "left join t_node b on a.nid = b.nid "
+					+ "left join t_user c on a.user_name = c.login_name "
+					+ "left join t_topiccount d on a.tid = d.tid "
+					+ "where a.status = ? ";
+			
+			return Topic.db.sql(sql, 1).first(TopicDto.class);
+		}
+		return null;
+	}
+	
+	@Override
+	public Pager<TopicDto> getTopics(Integer nid, int page, int limit) {
 		String sql = "select a.tid, a.user_name, a.reply_user, a.title, a.create_time, a.update_time, " +
 				"b.title as node_name, b.slug as node_slug, c.avatar, d.comments "
 				+ "from t_topic a "
 				+ "left join t_node b on a.nid = b.nid "
 				+ "left join t_user c on a.user_name = c.login_name "
 				+ "left join t_topiccount d on a.tid = d.tid "
-				+ "where a.status = ?";
+				+ "where a.status = ? ";
+		if(null != nid){
+			sql += "and a.nid = " + nid;
+		}
+		
 		return Topic.db.sql(sql, 1).orderBy("a.weight desc").page(page, limit, TopicDto.class);
 	}
 
 	@Override
 	public List<TopicDto> getTodayTopics(int limit) {
+		
+		if(limit < 1 || limit > 20){
+			limit = 20;
+		}
+		
 		String sql = "select a.tid, a.user_name, a.title, b.avatar "
 				+ "from t_topic a "
 				+ "left join t_user b on a.user_name = b.login_name "
@@ -62,5 +87,4 @@ public class TopicServiceImpl implements TopicService {
 		return Topic.db.sql(sql, limit).list(TopicDto.class);
 	}
 	
-
 }

@@ -10,12 +10,13 @@ import org.javachina.service.TopicService;
 
 import com.blade.ioc.annotation.Inject;
 import com.blade.jdbc.Pager;
-import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.RequestParam;
+import com.blade.mvc.annotation.RestController;
 import com.blade.mvc.annotation.Route;
+import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Response;
 
-@Controller(value = "topics", suffix = ".json")
+@RestController(value = "topics", suffix = ".json")
 public class TopicController {
 
 	@Inject
@@ -30,28 +31,27 @@ public class TopicController {
 	 * @param page
 	 * @param limit
 	 */
-	@Route
+	@Route(value = "/", method = HttpMethod.GET)
 	public void getTopic(Response response, @RequestParam(value = "nid", required = false) Integer nid,
 			@RequestParam(value = "is_essence", required = false) Integer is_essence,
 			@RequestParam(value = "page", required = false, defaultValue = "1") int page,
 			@RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
 
-		Pager<TopicDto> pager = topicService.getTopics(page, limit);
+		Pager<TopicDto> pager = topicService.getTopics(null, page, limit);
 
 		RestResponse<Pager<TopicDto>> restResponse = RestResponse.build(pager);
 
 		response.json(Utils.toJSONString(restResponse));
 	}
 
-	@Route("today")
+	@Route(value="today", method = HttpMethod.GET)
 	@Permissions
-	public void getTodayHot(Response response,
+	public RestResponse<List<TopicDto>> getTodayHot(Response response,
 			@RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
-		
+
 		List<TopicDto> list = topicService.getTodayTopics(limit);
 		RestResponse<List<TopicDto>> restResponse = RestResponse.build(list);
-
-		response.json(Utils.toJSONString(restResponse));
+		return restResponse;
 	}
 
 }

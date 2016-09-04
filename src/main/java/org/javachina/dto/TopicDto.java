@@ -8,6 +8,6 @@ public class TopicDto extends Topic{
 	public String avatar;
 	public String node_name;
 	public String node_slug;
-	public Integer comments;
+	public Integer comments = 0;
 	
 }

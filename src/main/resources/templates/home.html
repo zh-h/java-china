@@ -6,43 +6,43 @@
 				<div class="panel-heading home-panel">
 					<div class="box-tab">
 						<ul class="nav nav-tabs">
-							<li #if(null==tab)class="active"#end><a href="${base_url('')}" data-toggle="tab">热门</a></li>
+							<li #if(null==tab)class="active"#end><a href="/" data-toggle="tab">热门</a></li>
 							#for(node : hot_nodes)
-							<li #if(tab==node.slug)class="active"#end><a href="${base_url('/?tab=') + node.slug}" data-toggle="tab">${node.title}</a></li>
+							<li #if(tab==node.slug)class="active"#end><a href="/?tab=${node.slug}" data-toggle="tab">${node.title}</a></li>
 							#end
 						</ul>
 						<div class="tab-content">
 							<div class="tab-pane active" id="home">
-								#if(null == topicPage.results || topicPage.results.size() == 0)
+								#if(null == topicPage.list || topicPage.list.size() == 0)
 								<div class="alert alert-info alert-dismissable">
 									该节点下暂时还木有帖子呢 <i class="twa twa-lg twa-sparkles"></i>
 								</div>
 								#else
 								<section class="widget bg-white post-comments">
 									
-									#for(topic : topicPage.results)
+									#for(topic : topicPage.list)
 									<div class="media">
-										<a class="pull-left" href="${base_url('/member/') + topic.user_name}"> 
+										<a class="pull-left" href="/member/$topic.user_name}"> 
 											<img class="media-object avatar avatar-sm" src="${topic.avatar}" alt="${topic.user_name}">
 										</a>
 										<div class="comment">
 											<div class="comment-author h6 no-margin">
 												#if(topic.comments > 0)
 												<div class="comment-meta small">
-													<a href="${base_url('/topic/') + topic.tid + '#Reply' + topic.comments}" class="badge-comment">${topic.comments}</a>
+													<a href="/topic/${topic.tid}#Reply${topic.comments}" class="badge-comment">${topic.comments}</a>
 												</div>
-												<a href="${base_url('/topic/') + topic.tid}">${topic.title}</a>
+												<a href="/topic/${topic.tid}">${topic.title}</a>
 												#else
-												<a href="${base_url('/topic/') + topic.tid}">${topic.title}</a>
+												<a href="/topic/'${topic.tid}">${topic.title}</a>
 												#end
 											</div>
 											<div class="comment-bt">
-												<span class="label label-default"><a href="${base_url('/go/') + topic.node_slug}">${topic.node_name}</a></span> &nbsp;•&nbsp; 
-												<strong><a href="${base_url('/member/') + topic.user_name}">${topic.user_name}</a></strong>
+												<span class="label label-default"><a href="/go/'${topic.node_slug}">${topic.node_name}</a></span> &nbsp;•&nbsp; 
+												<strong><a href="/member/${topic.user_name}">${topic.user_name}</a></strong>
 												 &nbsp;•&nbsp; <span>${timespan(topic.update_time)}</span>
 												 #if(topic.comments > 0)
 												 &nbsp;•&nbsp; 最后回复来自
-												 <strong><a href="${base_url('/member/') + topic.reply_name}">${topic.reply_name}</a></strong>
+												 <strong><a href="/member/${topic.reply_user}">${topic.reply_user}</a></strong>
 												 #end
 											</div>
 										</div>
@@ -52,7 +52,7 @@
 								</section>								
 								#end
 								<ul class="pager">
-									<li class="pull-left"><a href="${base_url('/recent')}">查看最新帖</a></li>
+									<li class="pull-left"><a href="/recent">查看最新帖</a></li>
 								</ul>
 							</div>
 						</div>
@@ -66,12 +66,12 @@
 				</div>
 				<div class="panel-body">
 					#for(node : nodes)
-                    	#if(node.pid == 0 && node.childs > 0)
+                    	#if(null != node.items && node.items.size() > 0)
                     		<div class="row">
-                    			<div class="col-sm-2" style="line-height: 30px;">${node.node_name}</div>
+                    			<div class="col-sm-2" style="line-height: 30px;">${node.title}</div>
                     			<div class="col-sm-10"><p>
 		                     	#for(nodeitem : node.items)
-		                     	<a href="${base_url('/go/') + nodeitem.node_slug}" class="btn btn-node btn-xs nodes" role="button">${nodeitem.node_name}</a>
+		                     	<a href="/go/${nodeitem.slug}" class="btn btn-node btn-xs nodes" role="button">${nodeitem.title}</a>
 		                     	#end
 		                     	</p></div>
 		                     </div>
@@ -81,8 +81,8 @@
                     <div class="row"><div class="col-sm-offset-2 col-sm-10"><p>
                     
                     #for(node : nodes)
-                    	#if(node.pid == 0 && node.childs == 0)
-                     	<a class="btn btn-node btn-xs nodes" role="button">${node.node_name}</a>
+                    	#if(null == node.items || node.items.size() == 0)
+                     	<a class="btn btn-node btn-xs nodes" role="button">${node.title}</a>
                     	#end
                     #end
                     </p></div></div>

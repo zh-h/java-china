@@ -10,7 +10,9 @@ public interface TopicService {
 	
 	Topic getTopic(Integer tid);
 	
-	Pager<TopicDto> getTopics(int page, int limit);
+	TopicDto getTopicDetail(Integer tid);
+	
+	Pager<TopicDto> getTopics(Integer nid, int page, int limit);
 
 	List<TopicDto> getTodayTopics(int limit);
 	
